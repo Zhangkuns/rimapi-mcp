@@ -1,6 +1,6 @@
 # RimWorld MCP 游玩说明
 
-维护：Codex；核对：2026-11-15；状态：客户端使用说明。
+维护：Codex；核对：2026-11-16；状态：客户端使用说明。
 
 你控制的是 `rimapi_status` 报告的独立 RimWorld 实例。网页画面供人观看；AI 主要通过结构化 API 观察与决策，加载地图后可调用 `rimapi_screenshot` 取得真正的 MCP 图片。
 
@@ -39,6 +39,8 @@
 
 ## 连接边界
 
-MCP 只以本地 stdio 运行，由 Mac mini 的客户端启动；HTTP 请求由 Mac mini 经 Tailscale 发往游戏。MCP 不公开新的监听端口，不提供 shell 或任意目标 URL。
+MCP 以本地 stdio 运行，由客户端电脑启动；API 请求经已配置的 HTTPS、Tailscale 或 localhost 发往游戏。公网 API 可达不代表云端助理已有 HTTP MCP 端点；云端客户端还需支持本地执行桥接或另行部署的 HTTP MCP 服务。MCP 不公开新的监听端口，不提供 shell 或任意目标 URL。
+
+网页画面是可选的人类观看入口；使用 Cloudflare Access 时先在浏览器登录。画面登录和 API Bearer 分别校验，`RIMAPI_VIEW_URL` 不参与 API 请求。
 
 `.env` 默认从适配器所在目录读取，与终端当前目录无关；已有环境变量优先。Token 不放入提示词、工具参数或工具结果。游戏端是否启用 Bearer 由游戏 Mod 设置/游戏进程环境决定，客户端填 Token 不会替服务器开启鉴权。

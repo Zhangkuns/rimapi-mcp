@@ -39,7 +39,8 @@ class APIHandler(BaseHTTPRequestHandler):
         raw = self.rfile.read(int(self.headers.get("Content-Length", "0")))
         body = json.loads(raw) if raw else None
         record = {"path": self.path, "method": self.command, "body": body,
-                  "authorization": self.headers.get("Authorization"), "key": self.headers.get("Idempotency-Key")}
+                  "authorization": self.headers.get("Authorization"), "key": self.headers.get("Idempotency-Key"),
+                  "user_agent": self.headers.get("User-Agent")}
         self.calls.append(record)
         if path not in ["/api/v1/version", "/api/v1/capabilities"] and record["authorization"] != "Bearer test-secret":
             return self.send(401, {"success": False, "errors": ["unauthorized"]})
@@ -115,6 +116,7 @@ class AdapterTests(unittest.TestCase):
         self.assertTrue(response["ok"])
         record = response["response"]["data"]
         self.assertEqual(record["authorization"], "Bearer test-secret")
+        self.assertEqual(record["user_agent"], "rimapi-mcp/1.0")
         self.assertEqual(record["key"], "same-operation")
         self.assertEqual(parse_qs(urlsplit(record["path"]).query), {"speed": ["0"], "confirm": ["true"], "ids": ["1", "2"]})
         self.assertEqual(record["body"], {"pawn_id": "321", "dry_run": True})

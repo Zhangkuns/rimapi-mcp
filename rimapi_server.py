@@ -95,7 +95,8 @@ class GameAPI:
                     if item is not None:
                         pairs.append((key, str(item).lower() if isinstance(item, bool) else str(item)))
             target += "?" + parse.urlencode(pairs)
-        headers = {"Accept": "application/json", "Content-Type": "application/json"}
+        headers = {"Accept": "application/json", "Content-Type": "application/json",
+                   "User-Agent": "rimapi-mcp/1.0"}
         if self.settings.token:
             headers["Authorization"] = "Bearer " + self.settings.token
         if idempotency_key:

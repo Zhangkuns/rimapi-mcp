@@ -10,7 +10,7 @@ from rimapi_server import HERE, References
 def package(destination: Path):
     destination.mkdir(parents=True, exist_ok=True)
     for name in ["rimapi_server.py", "smoke.py", "test_rimapi_mcp.py", "package.py", "requirements.txt",
-                 ".env.example", ".gitignore", "README.md", "PLAYING.md"]:
+                 ".env.example", ".gitignore", "README.md", "README.zh-CN.md", "PLAYING.md"]:
         shutil.copy2(HERE / name, destination / name)
     license_path = HERE / "LICENSE" if (HERE / "LICENSE").is_file() else HERE.parent / "LICENSE"
     shutil.copy2(license_path, destination / "LICENSE")

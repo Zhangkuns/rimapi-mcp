@@ -1,42 +1,71 @@
 # RIMAPI MCP
 
-通过现有 RimWorld REST API 观察和操作游戏的本地 stdio MCP 服务。客户端支持 Python 3.11 及以上，使用官方 Python MCP SDK；无需在客户端电脑安装游戏或 Xvfb。
+English | [简体中文](README.zh-CN.md)
+
+Let an AI client observe and control RimWorld through an existing RIMAPI REST API. This adapter runs locally over stdio, requires Python 3.11 or later, and uses the official Python MCP SDK. The client computer does not need RimWorld or Xvfb installed.
 
 ```text
-AI 客户端 → 本地 stdio MCP → HTTP / Tailscale → RimWorld API
+AI client → local stdio MCP → HTTPS / Tailscale / localhost → RimWorld API
+Browser   → Cloudflare Access → Tunnel → RimWorld game viewer (optional)
 ```
 
-游戏电脑需要运行兼容的 RIMAPI 服务。跨机器连接时，两台电脑应能通过 Tailscale 或其他已配置的网络互通。本项目不自动发布公网端口，也不替游戏配置认证或网页画面。
+The game computer must already run a compatible RIMAPI service. The adapter can connect to a public HTTPS API, a reachable Tailscale host, or localhost. The game viewer and its authentication are configured separately on the game host.
 
-## 安装与私有配置
-
-在本目录运行：
+## Install
 
 ```sh
+git clone https://github.com/Zhangkuns/rimapi-mcp.git
+cd rimapi-mcp
 python3 -m venv .venv
 .venv/bin/python -m pip install -r requirements.txt
 cp .env.example .env
 chmod 600 .env
 ```
 
-在 `.env` 中填写自己的连接信息：
+## Configure your private connection
+
+For an existing HTTPS deployment, edit `.env`:
 
 ```dotenv
-RIMAPI_BASE_URL=http://game-host:18765/api/v1
-RIMAPI_API_TOKEN=
-RIMAPI_VIEW_URL=
+RIMAPI_BASE_URL=https://rimapi.example.com/api/v1
+RIMAPI_API_TOKEN=replace-with-your-game-token
+RIMAPI_VIEW_URL=https://rimworld.example.com/
 RIMAPI_TIMEOUT_SECONDS=30
 ```
 
-将 `game-host` 替换为游戏电脑的实际主机名或 Tailscale 地址；`RIMAPI_API_TOKEN` 必须与游戏端配置一致。游戏未启用鉴权时可留空；只填写客户端 Token 不会开启游戏端校验。`RIMAPI_VIEW_URL` 是可选的人类观看地址。
+Replace the example hostnames and Token with your own values. `RIMAPI_API_TOKEN` is the game API's Bearer Token, not a Cloudflare management API Token. Keep real addresses and credentials in the private `.env`.
 
-默认加载脚本旁的 `.env`，不依赖终端当前目录；也可用 `--env-file /absolute/path/to/.env` 指定。已有环境变量优先。修改配置后重连 MCP，或新建客户端任务，使进程重新读取配置。
+| Setting | Purpose |
+| --- | --- |
+| `RIMAPI_BASE_URL` | HTTP(S) API host, optionally ending in `/api/v1` |
+| `RIMAPI_API_TOKEN` | Token matching the game or public gateway; sent as `Authorization: Bearer …` |
+| `RIMAPI_VIEW_URL` | Optional browser viewing URL; does not affect API requests |
+| `RIMAPI_TIMEOUT_SECONDS` | Request timeout in seconds; defaults to 30 |
 
-实际地址、密钥、个人 `mcp-config.json`、`.env` 及其备份、`.venv` 和运行记录均由 `.gitignore` 排除。提交前可用 `git status --short` 检查待提交内容；仓库中的 `.env.example` 仅包含通用示例。
+For a local game, use `http://localhost:8765/api/v1`. For a Tailscale deployment, use a reachable game hostname and its configured API port, such as `http://game-host:18765/api/v1`; the client needs tailnet access. A public HTTPS API does not require Tailscale on the client.
 
-## 接入 MCP 客户端
+The default `.env` is loaded from beside `rimapi_server.py`, regardless of the working directory. Use `--env-file /absolute/path/to/.env` to select another file. Exported environment variables take precedence. Reconnect the MCP service after changing configuration so its process reads the new values.
 
-配置本地 stdio 服务，命令使用本目录虚拟环境中的 Python，参数使用脚本及私有 `.env` 的绝对路径。例如：
+An empty Token works only when the server permits unauthenticated access. Setting a client Token does not enable authentication on the game server. The adapter does not create a tunnel, DNS records, an Access policy, or a game viewer.
+
+## HTTPS and viewer authentication
+
+A deployment can publish two separate hostnames through Cloudflare Tunnel while keeping the API proxy, noVNC, and VNC listeners on loopback:
+
+| Entry point | Authentication |
+| --- | --- |
+| Game viewer | Cloudflare Access login, for example an email allowlist with one-time codes; protect the page, assets, and WebSocket handshake |
+| REST API | Bearer Token on every public API request, without an interactive browser login |
+
+For that deployment, configure Access and origin validation before publishing the viewer hostname. Enforce Bearer authentication at the public API gateway on all paths, including `/version` and `/capabilities`, which the native game server exempts. These are deployment requirements; the adapter does not enforce the gateway's configuration.
+
+Browser login and API authentication are separate. The game Token cannot log in to the viewer; an Access browser session does not authenticate this adapter. Point `RIMAPI_BASE_URL` at the API hostname, and open `RIMAPI_VIEW_URL` in your browser to log in to the viewer. The adapter uses `rimapi-mcp/1.0` as its User-Agent for API requests.
+
+This repository provides **stdio MCP**. The client must be able to launch the local Python process. A cloud-only assistant that accepts a remote HTTP MCP URL needs a separately implemented and authenticated HTTP MCP service or a supported local execution bridge. Making the REST API public does not turn it into an HTTP MCP endpoint or automatically connect Dots.
+
+## Connect an MCP client
+
+Register a local stdio server using absolute paths to the virtual environment's Python, the script, and the private `.env`:
 
 ```json
 {
@@ -53,7 +82,7 @@ RIMAPI_TIMEOUT_SECONDS=30
 }
 ```
 
-支持 Codex CLI 的环境也可以注册：
+For a local Codex CLI installation:
 
 ```sh
 codex mcp add rimapi -- \
@@ -62,36 +91,46 @@ codex mcp add rimapi -- \
   --env-file /absolute/path/to/rimapi-mcp/.env
 ```
 
-该服务需要由能访问游戏电脑的本地客户端启动。云端 AI 不会自动继承另一台电脑上的 stdio 配置。
-
-## 检查连接与使用
+## Check the connection and play
 
 ```sh
 .venv/bin/python rimapi_server.py --check
 .venv/bin/python smoke.py
 ```
 
-连接检查同时读取发现接口和受保护状态，报告服务端鉴权与客户端凭据状态，不输出 Token。`smoke.py` 使用官方 MCP 客户端测试握手、工具目录、接口与参考查询及截图；游戏主菜单无地图时会如实记录截图错误。`--settings-roundtrip` 可选地切换并恢复游戏的后台运行设置。
+`--check` reads discovery and protected game state, reporting authentication and credential status without printing the Token. `smoke.py` checks the official MCP handshake, tool discovery, API/reference lookup, and an actual MCP screenshot. With no map loaded, it reports the screenshot error. The optional `--settings-roundtrip` flag changes and restores the game's run-in-background setting.
 
-让 AI 首先调用 `rimapi_status` 和 `rimapi_gameplay_guide`，确认准确游戏实例、存档、鉴权和正常玩法要求，然后根据用户目标查询、操作并读回结果。
+Ask the AI to call `rimapi_status` and `rimapi_gameplay_guide` first, confirm the game instance, loaded save, and authentication, then observe, act, and read back the result. The [gameplay guide](PLAYING.md) is currently in Chinese.
 
-| 工具 | 用途 |
+| Tool | Purpose |
 | --- | --- |
-| `rimapi_status` | 版本、DLC、鉴权与受保护游戏状态 |
-| `rimapi_search_endpoints` | 搜索游戏实时 API 路由与合同字段 |
-| `rimapi_search_reference` / `rimapi_read_reference` | 查随包接口合同、示例、控制器及请求 DTO |
-| `rimapi_read` / `rimapi_write` | GET 与显式写入，分别传递 query、JSON body 和可选幂等键 |
-| `rimapi_screenshot` | 地图加载后返回真正的 MCP 图片 |
-| `rimapi_gameplay_guide` | [正常游玩说明](PLAYING.md) |
+| `rimapi_status` | Version, DLC, authentication, and protected game state |
+| `rimapi_search_endpoints` | Search the connected game's current routes and contract metadata |
+| `rimapi_search_reference` / `rimapi_read_reference` | Find bundled contracts, examples, controllers, and request DTOs |
+| `rimapi_read` / `rimapi_write` | GET and explicit writes, with separate query/body and optional idempotency key |
+| `rimapi_screenshot` | Return an actual MCP image when a map is loaded |
+| `rimapi_gameplay_guide` | Read the normal-play instructions |
 
-请求只连接配置的游戏，不提供任意目标 URL 或 shell。写入不自动重试；超时表示结果未知，需先查询真实状态。HTTP 200 或 queued 不能证明原生工作已完成。具体参数从参考工具查阅，不能把实时目录中空的 parameters 当作无参数。
+Requests only target the configured game; there is no shell or arbitrary-URL tool. Writes are never automatically retried. A timeout means the outcome is unknown: read current state before retrying. HTTP 200 or a queued operation does not prove a pawn job has finished. Read the reference before selecting parameters; an empty runtime `parameters` list does not mean an endpoint has no inputs.
 
-## 参考、测试与来源
+## Troubleshooting
 
-独立仓库的 `references/` 包含接口合同、示例及控制器/DTO 源码，只作参数参考，不在客户端执行。它们是特定 RIMAPI 版本的快照，实际可用路由以所连接游戏的目录为准。
+| Symptom | Check |
+| --- | --- |
+| API returns 401 | Token matches the game/gateway; `.env` was reloaded; exported variables are not overriding it |
+| API returns 302 or a login page | API hostname and gateway authentication; the adapter does not complete browser Access login or follow redirects |
+| API returns 403 or Cloudflare 1010 | Update the adapter and inspect the relevant Cloudflare security event |
+| Connection fails | Game, API gateway, and tunnel are running; hostname is reachable; Tailscale is connected if using a tailnet address |
+| AI cannot start the MCP service | Client supports local stdio servers and uses valid absolute paths |
+
+## Privacy, tests, and source
+
+`.gitignore` excludes `.env` and its backups, personal `mcp-config.json`, `.venv`, and runtime data. The example file contains only generic values. Keep real hostnames, IPs, emails, Tokens, and tunnel credentials out of commits; inspect `git status --short` before publishing.
+
+The standalone `references/` folder contains API documentation and controller/DTO source snapshots for parameter lookup. The client does not execute those sources. Available routes depend on the connected game's version.
 
 ```sh
 .venv/bin/python -m unittest discover -s . -p 'test_*.py' -v
 ```
 
-这些测试使用本地 HTTP 服务，无需启动游戏。该适配器来源于 RIMAPI 工程的 `mcp/`，接口参考来源为 `AppSprout-dev/RIMAPI` 及其后续开发；授权信息随独立包的 `LICENSE` 保留。
+Tests use a local HTTP fixture and do not require a running game. `package.py DESTINATION` creates a standalone copy with both READMEs and the API references; private configuration and environments are excluded. The adapter comes from the RIMAPI project's `mcp/` directory; references originate from `AppSprout-dev/RIMAPI` and subsequent development. The standalone package retains the GPL terms in `LICENSE`.
