@@ -1,0 +1,12 @@
+# Private connection settings and backups
+.env
+.env.*
+!.env.example
+mcp-config.json
+
+# Local dependencies, evidence and caches
+.venv/
+.runtime/
+__pycache__/
+*.py[cod]
+.DS_Store
