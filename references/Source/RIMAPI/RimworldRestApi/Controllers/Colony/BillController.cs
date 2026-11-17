@@ -10,10 +10,28 @@ namespace RIMAPI.Controllers
     public class BillController
     {
         private readonly IBillService _billService;
+        private readonly AiMutationCoordinator _mutations;
 
-        public BillController(IBillService billService)
+        public BillController(IBillService billService, AiMutationCoordinator mutations)
         {
             _billService = billService;
+            _mutations = mutations;
+        }
+
+        [Get("/api/v1/buildings/bill/options")]
+        [EndpointMetadata("Discover native bill workers, count sources and classic product styles")]
+        public async Task GetOptions(HttpListenerContext context) =>
+            await context.SendJsonResponse(_billService.GetUiOptions(
+                RequestParser.GetIntParameter(context, "building_id"),
+                RequestParser.GetIntParameter(context, "bill_id")));
+
+        [Post("/api/v1/buildings/bill/configure")]
+        [EndpointMetadata("Set or clear bill worker/count-source/style choices using native setters")]
+        public async Task Configure(HttpListenerContext context)
+        {
+            var body = await context.Request.ReadBodyAsync<BillConfigureRequest>();
+            await _mutations.SendAsync(context, body, body != null && body.DryRun,
+                () => _billService.Configure(body), r => r.Success);
         }
 
         [Get("/api/v1/buildings/bills")]
@@ -31,8 +49,8 @@ namespace RIMAPI.Controllers
         {
             var buildingId = RequestParser.GetIntParameter(context, "building_id");
             var body = await context.Request.ReadBodyAsync<CreateBillRequest>();
-            var result = _billService.CreateBill(buildingId, body);
-            await context.SendJsonResponse(result);
+            await _mutations.RunOnMain(async () =>
+                await context.SendJsonResponse(_billService.CreateBill(buildingId, body)));
         }
 
         [Delete("/api/v1/buildings/bills/remove")]
@@ -61,8 +79,8 @@ namespace RIMAPI.Controllers
             var buildingId = RequestParser.GetIntParameter(context, "building_id");
             var billId = RequestParser.GetIntParameter(context, "bill_id");
             var body = await context.Request.ReadBodyAsync<UpdateBillRequest>();
-            var result = _billService.UpdateBill(buildingId, billId, body);
-            await context.SendJsonResponse(result);
+            await _mutations.RunOnMain(async () =>
+                await context.SendJsonResponse(_billService.UpdateBill(buildingId, billId, body)));
         }
 
         [Delete("/api/v1/buildings/bill/remove")]

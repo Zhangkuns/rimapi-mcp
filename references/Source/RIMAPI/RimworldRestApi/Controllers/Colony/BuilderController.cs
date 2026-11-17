@@ -3,6 +3,7 @@ using System.Net;
 using RIMAPI.Core;
 using RIMAPI.Models;
 using RIMAPI.Services;
+using RIMAPI.Http;
 
 namespace RIMAPI.Controllers
 {
@@ -25,6 +26,22 @@ namespace RIMAPI.Controllers
             var result = _builderService.CopyArea(body);
             await context.SendJsonResponse(result);
         }
+
+        [Get("/api/v1/builder/constructions")]
+        [EndpointMetadata("List all Blueprint/Frame objects on a map or intersecting rectangle, including materials and work")]
+        public async Task GetConstructions(HttpListenerContext context)
+        {
+            int mapId = RequestParser.GetMapId(context);
+            int? minX = ReadOptionalInt(context, "min_x");
+            int? minZ = ReadOptionalInt(context, "min_z");
+            int? maxX = ReadOptionalInt(context, "max_x");
+            int? maxZ = ReadOptionalInt(context, "max_z");
+            await context.SendJsonResponse(_buildControl.GetConstructions(mapId, minX, minZ, maxX, maxZ));
+        }
+
+        static int? ReadOptionalInt(HttpListenerContext context, string name) =>
+            context.Request.QueryString[name] == null ? (int?)null
+                : RequestParser.GetIntParameter(context, name);
 
         [Post("/api/v1/builder/paste")]
         public async Task PasteArea(HttpListenerContext context)

@@ -5,6 +5,7 @@ namespace RIMAPI.Models
     {
         public int ThingId { get; set; }
         public string StyleDef { get; set; }
+        public bool Basic { get; set; }
         public bool Confirm { get; set; }
         public bool DryRun { get; set; }
     }

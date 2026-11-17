@@ -1,5 +1,7 @@
 # Core 动物主人、跟随、放出与攻击目标（C-36）
 
+2026-11-16 修复：新增clear_master:true明确恢复Master=null，与非空master_id/attack_target_id冲突400；null/省略master_id保持不修改，不改变跟随/训练。见[UI-13合同](ui-option-repairs.md)与[原生读回](../references/reviews/2026-11-16-ui-api-repair.md)。
+
 2026-11-12 新增：
 
 - `GET /animal/settings?animal_id`：原生 `playerSettings.Master`、

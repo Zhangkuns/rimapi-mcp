@@ -1,5 +1,7 @@
 # Core 畜栏自动割草/过滤与自动屠宰策略（C-37）
 
+2026-11-16 修复：新增animal_special_filters中的AllowMaleGender/AllowFemaleGender，读回保留原生DefName；物种与自动屠宰阈值仍独立。公母接纳矩阵及正常公驴入栏通过，见[UI-05合同](ui-option-repairs.md)与[验收](../references/reviews/2026-11-16-ui-api-repair.md)。
+
 2026-11-12 新增：
 
 - `GET /pen/policy?thing_id`：`CompAnimalPenMarker` 的 `RenamableLabel`、

@@ -1,5 +1,7 @@
 # Core 正常工作队列、优先工作与受精取消（C-14）
 
+2026-11-16 修复：set_manual_priorities实际改变值后通知全部玩家人物workSettings缓存，dry/同值不重复刷新；控制器异步读body后通过协调器回主线程，兑现既有Game幂等/事件合同。原生排序、dry与重放通过，见[UI-12合同](ui-option-repairs.md)与[验收](../references/reviews/2026-11-16-ui-api-repair.md)。
+
 2026-11-13 新增：
 
 - `GET /api/v1/pawn/work-queue?pawn_id=`

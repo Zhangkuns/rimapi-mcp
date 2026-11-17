@@ -27,6 +27,22 @@
 
 其他接口必须按具体合同选择参数位置。`dry_run:true` 只放 JSON body，且仅在明确支持的接口使用。旧接口不因接入 MCP 就具备预演或幂等。
 
+## 原生 UI 选项与环境/显示
+
+先用 `rimapi_search_endpoints` 确认运行中游戏已提供所需路由，再搜索 `game-preferences` 或 `ui-option-repairs` 参考读取合同。通用 `rimapi_read` / `rimapi_write` 可直接调用这些接口：
+
+| 原生选项 | 路由与发现方式 |
+| --- | --- |
+| 音量、自动存档、输入偏好、语言、分辨率与 UI 缩放 | `GET/POST /game/preferences`；先读 `schema`、语言 folder_name 和实际显示模式 |
+| 快捷键 A/B 槽 | `GET/POST /game/key-bindings`；先读原生 DefName、当前/默认值与合法 KeyCode |
+| 地图/世界显示底栏 | `GET/POST /game/play-settings`；先读 `available_flags` / `unavailable_flags`，与自绘 overlay 分开 |
+| 账单操作者、计数来源、产品风格 | `GET /buildings/bill/options` 与 `POST /buildings/bill/configure` |
+| 书架内容与准确一本书弹出 | `GET /building/books` 与 `POST /building/books/eject` |
+
+偏好/键位可在主菜单使用，幂等为 `process_memory`；原生语言切换仅在主菜单，显示变更需合同规定的 `confirm_display`。显示底栏要求活动 Game，幂等为 `game_memory`，可开启项受 DLC 和当前地图资格限制。其它过滤、床用途、补舱、蓝图与清除主人字段见 `ui-option-repairs`。环境与显示控制的成功单独记录。
+
+源码树参考与独立包快照的更新方式见 [MCP 说明](README.zh-CN.md)。参考中出现新接口不代表所连接游戏已升级；新增参考路径需重连 MCP 后载入。
+
 ## 观察、操作、读回
 
 先查询准确实例 ID/资格/资源，再决定和提交动作。把接受、排队、原生工作执行中、完成与失败分别处理；HTTP 200 或 operation 事件不是建设、手术、研究等工作的完成证据。

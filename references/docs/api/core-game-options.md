@@ -1,5 +1,7 @@
 # Core 运行中叙事者、难度、Anomaly 与玩法选项（C-05）
 
+2026-11-16 修复：完整原生偏好由[game/preferences](game-preferences.md)读写，含准确存档天数/数量与自动暂停；旧game/settings保留bool兼容并新增准确数值/volume_ui。音画、语言/键位及原生显示底栏UI-E01–03已补并验证，见[验收](../references/reviews/2026-11-16-ui-api-repair.md)。
+
 2026-11-13 新增。只覆盖影响玩法/存档的选项；音频、视频、UI 缩放、摄像机等
 纯客户端选项不在此端点。
 

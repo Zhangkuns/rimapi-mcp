@@ -1,13 +1,14 @@
 # 五 DLC 与 Core API 游玩范围摘要
 
-维护：Codex；核对：2026-11-13；状态：已登记缺口完成核销；逐项状态只在统一账本维护。
+维护：Codex；核对：2026-11-16；状态：本轮UI及环境差集已修复/限定核销；逐项状态只在统一账本维护。
 
 目标按[纯API合同](api-playability.md)：正常开局、Core经营/旅行、五DLC正常机制/结局与失败继续，可通过查询、选择、调用及结果读回完成。
 正常玩家操作与环境/调试API按[使用语义](api-usage-semantics.md)区分，不以刷任务、改值或UI输入代替正常业务链。
 
 | 信息 | 权威入口 | 限定 |
 | --- | --- | --- |
-| 当前开放项与核销 | [统一账本](five-dlc-remaining-checklist.md) | 当前0G/0V/0A；不另维护重复分领域计数 |
+| 当前开放项与核销 | [统一账本](five-dlc-remaining-checklist.md) | 页首UI差集已限定核销；不另维护重复计数，不掩盖其它技术债 |
+| UI可调整选项调查与修复 | [原对照](../references/reviews/2026-11-16-ui-api-parity.md)、[修复验收](../references/reviews/2026-11-16-ui-api-repair.md) | 原发现保留；14项/3环境组实现、原生结果及未测范围分别记录 |
 | 本阶段交付 | [交付记录](../exec-plans/completed/2026-11-13-api-playability.md) | 七来源包、E矩阵、正常连续链与四族修复 |
 | 最新四族复验 | [统一DLL报告](../references/reviews/2026-11-13-api-playability-gap-repair-integrated.md) | C-11/C-09/C-17/OD-R09，准确对象与真实终态 |
 | 验证边界 | [质量](../QUALITY_SCORE.md)、[技术债](../exec-plans/tech-debt-tracker.md) | B-01–B-05、持续SSE及加载过渡响应等保留 |

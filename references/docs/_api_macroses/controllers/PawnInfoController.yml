@@ -1,7 +1,7 @@
 title: '### :material-account-details: Pawn Info Controller'
 desc: The **Pawn Info Controller** provides detailed information about pawns.
 /api/v1/pawns/details:
-  desc: Gets detailed information about a pawn.
+  desc: Gets detailed information about a pawn, including native death/downed flags, consciousness, moving capacity and current body size. See the [pawn readback contract](api/core-pawn-readback.md).
   curl: ''
   request: ''
   response: ''

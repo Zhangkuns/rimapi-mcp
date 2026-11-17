@@ -43,6 +43,9 @@ namespace RIMAPI.Models
         public IntRangeDto AllowedSkillRange { get; set; }
         public int? PawnRestrictionId { get; set; }
         public string PlayerCustomName { get; set; }
+        public string WorkerRestriction { get; set; }
+        public BillCountSource CountSource { get; set; }
+        public BillProductStyle ProductStyle { get; set; }
         public int? SlotGroupId { get; set; }
         public List<string> AllowedMaterials { get; set; } = new List<string>();
         public List<string> AvailableMaterials { get; set; } = new List<string>();
@@ -53,7 +56,7 @@ namespace RIMAPI.Models
         public string IngredientMaxQuality { get; set; }
     }
 
-    public class CreateBillRequest
+    public class CreateBillRequest : BillUiOptions
     {
         public string RecipeDefName { get; set; }
         public string RepeatMode { get; set; }
@@ -76,7 +79,6 @@ namespace RIMAPI.Models
         public bool? LimitToAllowedStuff { get; set; }
         public float? IngredientSearchRadius { get; set; }
         public IntRangeDto AllowedSkillRange { get; set; }
-        public int? PawnRestrictionId { get; set; }
         public string PlayerCustomName { get; set; }
         public List<string> AllowedMaterials { get; set; }
         public string IngredientSpecialFilter { get; set; }
@@ -87,7 +89,7 @@ namespace RIMAPI.Models
         public string IngredientMaxQuality { get; set; }
     }
 
-    public class UpdateBillRequest
+    public class UpdateBillRequest : BillUiOptions
     {
         public string RepeatMode { get; set; }
         public int? RepeatCount { get; set; }
@@ -109,7 +111,6 @@ namespace RIMAPI.Models
         public bool? LimitToAllowedStuff { get; set; }
         public float? IngredientSearchRadius { get; set; }
         public IntRangeDto AllowedSkillRange { get; set; }
-        public int? PawnRestrictionId { get; set; }
         public string PlayerCustomName { get; set; }
         public List<string> AllowedMaterials { get; set; }
         public string IngredientSpecialFilter { get; set; }

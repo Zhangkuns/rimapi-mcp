@@ -1,5 +1,7 @@
 # Core 生产账单存放组/计数组（C-27）
 
+2026-11-16 修复：UI-01–03已补操作者互斥模式/清除、精确count_source与all恢复、classic产品风格/图案。旧include_group_id仍仅指命名组；新configure支持预检、dry、重放，旧创建/更新响应兼容。见[当前合同](ui-option-repairs.md)与[限定验收](../references/reviews/2026-11-16-ui-api-repair.md)。
+
 2026-11-12 扩展既有账单 CRUD：
 
 - `GET` 账单新增 `slot_group_id/slot_group_label`、`storage_group_id/

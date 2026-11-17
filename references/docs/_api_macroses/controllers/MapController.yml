@@ -11,7 +11,7 @@ desc: |-
   *   Query map size and boundaries.
   *   Modify terrain (set floors, clear debris).
 /api/v1/map/things:
-  desc: Returns a comprehensive list of all objects (things) present on the current map.
+  desc: Lists haulable resources and items (HaulableEver) on the specified map. This is not an all-object list and does not enumerate construction blueprints. Use the [construction query](api/construction-status.md) for complete Blueprint/Frame readback.
   curl: |-
     **Example:**
     ```bash
@@ -266,8 +266,9 @@ desc: |-
   method: GET
 /api/v1/map/things/radius:
   desc: |-
-    Returns a list of all things found within a specified radius around a center point.
-    Useful for finding nearby resources or enemies.
+    Returns drawable Item, Building and Plant objects within the radius, deduplicated by object ID.
+    Pawns and Blueprint categories are excluded; this endpoint cannot rule out enemies or construction plans.
+    See the [construction query](api/construction-status.md) for complete Blueprint/Frame readback.
   curl: |-
     **Example:**
     ```bash
@@ -637,11 +638,11 @@ desc: |-
     ```
   method: GET
 /api/v1/map/creatures/summary:
-  desc: Returns a summarized count and classification of all creatures (pawns) on the current map.
+  desc: Returns creature counts for the specified map. enemies_count includes all spawned pawns hostile to the player, including non-humanlike and downed pawns. Categories may overlap. Unknown maps return 404; zero enemies is not a safety guarantee. See the [pawn readback contract](api/core-pawn-readback.md).
   curl: |-
     **Example:**
     ```bash
-    curl --request POST \
+    curl --request GET \
     --url http://localhost:8765/api/v1/map/creatures/summary?map_id=0
     ```
   request: ''

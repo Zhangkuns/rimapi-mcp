@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using RIMAPI.Core;
 using RIMAPI.Models;
 using RIMAPI.Services;
+using RIMAPI.Http;
 
 namespace RIMAPI.Controllers
 {
@@ -19,12 +20,18 @@ namespace RIMAPI.Controllers
         }
 
         [Get("/api/v1/storage/settings")]
-        [EndpointMetadata("Read native storage priority/filter/group")]
-        public async Task Get(HttpListenerContext context) =>
-            await context.SendJsonResponse(_service.Get(context.Request.QueryString["thing_id"]));
+        [EndpointMetadata("Read complete native storage settings for a stockpile zone or storage building")]
+        public async Task Get(HttpListenerContext context)
+        {
+            int? zone = context.Request.QueryString["zone_id"] == null ? (int?)null
+                : RequestParser.GetIntParameter(context, "zone_id");
+            int? map = context.Request.QueryString["map_id"] == null ? (int?)null
+                : RequestParser.GetIntParameter(context, "map_id");
+            await context.SendJsonResponse(_service.Get(context.Request.QueryString["thing_id"], zone, map));
+        }
 
         [Post("/api/v1/storage/settings")]
-        [EndpointMetadata("Set storage priority/filter and create/enroll a group")]
+        [EndpointMetadata("Patch, replace, allow/disallow all or copy stockpile/building storage settings; manage building groups")]
         public async Task Set(HttpListenerContext context)
         {
             var body = await context.Request.ReadBodyAsync<StorageSettingsRequest>();

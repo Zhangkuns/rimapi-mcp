@@ -58,7 +58,7 @@ namespace RIMAPI.Models
     public class MedicalInfoDto
     {
         public bool IsDead { get; set; }
-        public bool IsDowned { get; set; } // True if crawling or incapacitated
+        public bool IsDowned { get; set; } // Native Pawn.Downed, independent of current job.
 
         // Capacities (0.0 to 1.0+)
         public float Consciousness { get; set; }
@@ -177,6 +177,7 @@ namespace RIMAPI.Models
         public int PawnId { get; set; }
         public int Hour { get; set; }
         public string Assignment { get; set; }
+        public bool DryRun { get; set; }
     }
 
     public class PawnWorkPrioritiesResponseDto

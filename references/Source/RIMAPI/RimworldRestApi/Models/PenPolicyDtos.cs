@@ -1,5 +1,14 @@
 namespace RIMAPI.Models
 {
+    public sealed class RopeAnimalRequest
+    {
+        public string AnimalId { get; set; }
+        public string HandlerId { get; set; }
+        public string Action { get; set; }
+        public string TargetId { get; set; }
+        public bool DryRun { get; set; }
+    }
+
     public sealed class PenPolicyRequest
     {
         public string ThingId { get; set; }
@@ -9,6 +18,7 @@ namespace RIMAPI.Models
         public bool? PlantAllowed { get; set; }
         public string AnimalDef { get; set; }
         public bool? AnimalAllowed { get; set; }
+        public System.Collections.Generic.Dictionary<string, bool> AnimalSpecialFilters { get; set; }
         public bool? CutNow { get; set; }
         public bool DryRun { get; set; }
     }

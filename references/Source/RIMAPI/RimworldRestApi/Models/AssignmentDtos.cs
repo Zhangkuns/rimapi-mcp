@@ -11,6 +11,8 @@ namespace RIMAPI.Models
     {
         public string ThingId { get; set; }
         public bool? ForPrisoners { get; set; }
+        public string OwnerType { get; set; }
+        public bool Confirm { get; set; }
         public bool? Medical { get; set; }
         public bool DryRun { get; set; }
     }

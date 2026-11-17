@@ -72,6 +72,10 @@ namespace RIMAPI.Models
         public bool LogVerbose { get; set; }        // If verbose logging is enabled
         public string TemperatureMode { get; set; } // "Celsius", "Fahrenheit", "Kelvin"
         public bool AutosaveInterval { get; set; }  // Usually in days (float or int representation)
+        public float AutosaveIntervalDays { get; set; }
+        public int AutosavesCount { get; set; }
+        public string AutomaticPauseMode { get; set; }
+        public float VolumeUi { get; set; }
 
         // --- Graphics / Display ---
         public string Resolution { get; set; }      // Format: "1920x1080"

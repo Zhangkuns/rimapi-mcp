@@ -18,6 +18,10 @@ namespace RIMAPI.Models
         public int PolicyId { get; set; }
         public string ThingDef { get; set; }
         public string SpecialFilter { get; set; }
+        public string MinQuality { get; set; }
+        public string MaxQuality { get; set; }
+        public float? MinMentalBreakChance { get; set; }
+        public float? MaxMentalBreakChance { get; set; }
         public bool Allowed { get; set; }
         public bool DryRun { get; set; }
     }

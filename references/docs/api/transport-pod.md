@@ -1,5 +1,7 @@
 # Core 普通运输舱/穿梭机装载与到达动作（C-12）
 
+2026-11-16 修复：Building_PodLauncher.autoPlacePods由building/facility.auto_place_pods设置，启用即走原生CheckPlacePod，关闭不取消已有蓝图。即时补建已验；后续Notify走同一原生方法，未另跑完整发射。见[UI-09合同](ui-option-repairs.md)与[范围限定](../references/reviews/2026-11-16-ui-api-repair.md)。
+
 `GET/POST /api/v1/transport/pod`。只覆盖普通 `CompTransporter` +
 `CompLaunchable_TransportPod`；`CompShuttle`/许可穿梭机/重力船和
 `/dlc/odyssey/shuttle`、`/dlc/royalty/transport/*` 不属于本端点（OD-R06

@@ -4,6 +4,7 @@ namespace RIMAPI.Models
     {
         public string AnimalId { get; set; }
         public string MasterId { get; set; }
+        public bool ClearMaster { get; set; }
         public bool? FollowDrafted { get; set; }
         public bool? FollowFieldwork { get; set; }
         public bool? Released { get; set; }

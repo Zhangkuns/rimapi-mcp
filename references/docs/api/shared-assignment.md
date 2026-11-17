@@ -1,5 +1,7 @@
 # Shared 普通床/王座/冥想点独立指派与床用途（S-06）
 
+2026-11-16 修复：新增owner_type三用途；准确目标、原生房间联动/清ownership/通知与影响确认，不依赖UI选中。保留medical，敌对床拒绝。原生奴隶选床资格通过；见[UI-08合同](ui-option-repairs.md)与[验收](../references/reviews/2026-11-16-ui-api-repair.md)。
+
 2026-11-12 新增原生 `CompAssignableToPawn` 通用面：
 
 - `GET /building/assignable?thing_id`：组件类型、`AssignedPawnsForReading`、

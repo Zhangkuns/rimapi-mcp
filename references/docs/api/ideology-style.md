@@ -1,5 +1,7 @@
 # Ideology 单物品风格（G-32）
 
+2026-11-16 修复：classic玩家蓝图按entityDefToBuild发现风格，支持style_def或basic:true，写StyleDef/styleOverridden并刷新该网格；旧confirm保留，changed事件/重放正确。真实DiningChair建成风格通过；账单未来产品选择另见[UI-03/10合同](ui-option-repairs.md)及[验收](../references/reviews/2026-11-16-ui-api-repair.md)。
+
 已实现并验收：20 项断言（2026-11-05 复审后重跑）；证据 `Reverse/evidence/dlc-G-32.json`、
 原生实测 `Reverse/evidence/dlc-G-32-runtime.json`。
 

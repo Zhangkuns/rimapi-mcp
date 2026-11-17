@@ -1,5 +1,7 @@
 # Core 设施正常设置：门/聚会点/照明/陷阱/扫描器（C-26）
 
+2026-11-16 修复：风机支持allowed_auto_cut_plants完整替换/清空及成对auto_cut_plant_def/allowed编辑，读回不截断；发射器支持auto_place_pods原生持续开关。全请求预检、dry及原生标记/补蓝图通过，见[UI-06/09合同](ui-option-repairs.md)与[验收限定](../references/reviews/2026-11-16-ui-api-repair.md)。
+
 2026-11-12 新增 `GET/POST /api/v1/building/facility`：
 
 - 门：`Building_Door.holdOpenInt`（gizmo 同字段），读回 `HoldOpen`。

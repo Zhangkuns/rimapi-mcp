@@ -113,6 +113,12 @@ Ask the AI to call `rimapi_status` and `rimapi_gameplay_guide` first, confirm th
 
 Requests only target the configured game; there is no shell or arbitrary-URL tool. Writes are never automatically retried. A timeout means the outcome is unknown: read current state before retrying. HTTP 200 or a queued operation does not prove a pawn job has finished. Read the reference before selecting parameters; an empty runtime `parameters` list does not mean an endpoint has no inputs.
 
+## API and reference updates
+
+The adapter uses generic read/write tools and discovers routes from the connected game's `/capabilities` on each endpoint search. New API routes or body fields do not require a separate MCP tool. Native UI controls include `/game/preferences`, `/game/key-bindings`, `/game/play-settings`, `/buildings/bill/options`, `/buildings/bill/configure`, and `/building/books` / `/building/books/eject`. Search the `game-preferences` and `ui-option-repairs` references for their contracts; read current legal choices before writing.
+
+Inside the RIMAPI source tree, reference discovery includes current API documents and controller/DTO files. A standalone package instead reads its bundled `references/` snapshot. After API changes, regenerate the package from the updated RIMAPI checkout, synchronize it to client installations, and reconnect MCP to load newly added reference paths. The game must also load the matching DLL: updating MCP or its reference files does not update a running game. Use live endpoint discovery to confirm availability.
+
 ## Troubleshooting
 
 | Symptom | Check |

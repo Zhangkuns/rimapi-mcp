@@ -23,6 +23,20 @@ namespace RIMAPI.Controllers
         public async Task GetDefaults(HttpListenerContext context) =>
             await context.SendJsonResponse(_service.GetDefaults());
 
+        [Get("/api/v1/pawn/medicine-carry")]
+        [EndpointMetadata("Read the pawn's native Medicine inventory-stock type, target count and actual inventory")]
+        public async Task GetMedicineCarry(HttpListenerContext context) =>
+            await context.SendJsonResponse(_service.GetMedicineCarry(context.Request.QueryString["pawn_id"]));
+
+        [Post("/api/v1/pawn/medicine-carry")]
+        [EndpointMetadata("Set native per-pawn Medicine carry type and target count without spawning or forcing pickup")]
+        public async Task SetMedicineCarry(HttpListenerContext context)
+        {
+            var body = await context.Request.ReadBodyAsync<MedicineCarryRequest>();
+            await _mutations.SendAsync(context, body, body != null && body.DryRun,
+                () => _service.SetMedicineCarry(body), r => r.Data != null && r.Data.ContainsKey("applied") && (bool)r.Data["applied"]);
+        }
+
         [Post("/api/v1/medical/defaults")]
         [EndpointMetadata("Set native medical-care defaults by category")]
         public async Task SetDefaults(HttpListenerContext context)

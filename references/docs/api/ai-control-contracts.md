@@ -89,10 +89,10 @@ operation表示成功提交/应用接口操作，可能没有实际变化；不�
 订阅客户端无必达/持久重放保证。此前“先回复即断连漏事件”并非已证实故障，本轮是顺序强化与独立验证。
 
 能力字段：layer_source:contract表示该method/path有显式合同；覆盖数量以实际能力发现为准。dry_run_mode为none/validate/preview，
-idempotency为game_memory、quote（交易execute）或none，具体入口以精确合同为准，不能将支持扩展到全部写 API。
+idempotency为game_memory、process_memory（Prefs/键位跨菜单环境设置）、quote（交易execute）或none，具体入口以精确合同为准，不能将支持扩展到全部写 API。
 旧heuristic的未知字段为空/省略；dlc:null在显式通用合同表示无固定单一DLC要求，具体Def按已加载内容；
 在heuristic则表示未声明，不能反推Core-only。
 
-通用幂等见[Idempotency-Key合同](idempotency.md)；只限当前进程/同Game的30分钟缓存。
+通用幂等见[Idempotency-Key合同](idempotency.md)；game_memory限当前进程/同Game，process_memory跨同进程菜单/Game，两者均30分钟缓存且进程结束不持久。
 [服装政策合同](outfit-policy.md)、[验收记录](../references/reviews/2026-11-04-core-closeout-acceptance.md)。
 DLC及Core详细合同从[产品索引](../product-specs/index.md)进入；当前开放项与核销看[统一账本](../product-specs/five-dlc-remaining-checklist.md)，阶段结果见[交付记录](../exec-plans/completed/2026-11-13-api-playability.md)。`layer/executor`是执行方式，不是正常玩家/环境/rootdebug角色；按[API使用语义](../product-specs/api-usage-semantics.md)及具体原生流程区分，旧操作矩阵不作当前队列。

@@ -11,6 +11,10 @@ namespace RIMAPI.Models
         public bool? FirefoamAutoRebuild { get; set; }
         public bool? AutoCut { get; set; }
         public bool? AutoCutNow { get; set; }
+        public System.Collections.Generic.List<string> AllowedAutoCutPlants { get; set; }
+        public string AutoCutPlantDef { get; set; }
+        public bool? AutoCutPlantAllowed { get; set; }
+        public bool? AutoPlacePods { get; set; }
         public string TargetMineable { get; set; }
         public bool DryRun { get; set; }
     }

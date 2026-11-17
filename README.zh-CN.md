@@ -113,6 +113,12 @@ codex mcp add rimapi -- \
 
 请求只连接配置的游戏，不提供 shell 或任意目标 URL 工具。写入不自动重试；超时表示结果未知，重试前先查询真实状态。HTTP 200 或 queued 不代表人物工作已完成。选择参数前先读参考，实时目录中空的 `parameters` 不代表接口没有输入。
 
+## API 与参考更新
+
+适配器使用通用读写工具，每次搜索接口时从所连接游戏的 `/capabilities` 发现实时路由。新增路由或 body 字段无需单独新增 MCP 工具。原生 UI 控制包括 `/game/preferences`、`/game/key-bindings`、`/game/play-settings`、`/buildings/bill/options`、`/buildings/bill/configure` 和 `/building/books` / `/building/books/eject`。搜索 `game-preferences`、`ui-option-repairs` 参考阅读合同，写入前先读取当前合法选项。
+
+在 RIMAPI 源码树内，参考发现会纳入当前 API 文档及控制器/DTO；独立包读取随包的 `references/` 快照。API 改动后，应从更新后的 RIMAPI checkout 重新打包、同步客户端安装目录，再重连 MCP 载入新增参考路径。游戏也必须加载对应 DLL：更新 MCP 或参考文件不会升级运行中的游戏。实际可用性以实时接口发现为准。
+
 ## 排障
 
 | 现象 | 检查内容 |

@@ -1,5 +1,13 @@
 namespace RIMAPI.Models
 {
+    public sealed class MedicineCarryRequest
+    {
+        public string PawnId { get; set; }
+        public string MedicineDef { get; set; }
+        public int? TargetCount { get; set; }
+        public bool DryRun { get; set; }
+    }
+
     public sealed class MedicalDefaultsRequest
     {
         public string Colonist { get; set; }

@@ -1,5 +1,7 @@
 # Core 阅读政策 CRUD、过滤与指派（C-35）
 
+2026-11-16 修复：新增min/max_quality及min/max_mental_break_chance，分别操作阅读defFilter/effectFilter，GET policy/check可读范围；不是容器过滤。预检全请求、dry与原生书籍资格通过，见[UI-04合同](ui-option-repairs.md)和[验收](../references/reviews/2026-11-16-ui-api-repair.md)。
+
 2026-11-12 新增原生 `ReadingPolicyDatabase`/`ReadingPolicy`：
 
 - `GET /reading/policy`：`id/label/index/is_default/in_use`。

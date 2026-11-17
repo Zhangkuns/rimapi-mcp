@@ -11,11 +11,13 @@ namespace RIMAPI.Controllers
     {
         private readonly IColonistService _colonistService;
         private readonly ICachingService _cachingService;
+        private readonly AiMutationCoordinator _mutations;
 
-        public PawnController(IColonistService colonistService, ICachingService cachingService)
+        public PawnController(IColonistService colonistService, ICachingService cachingService, AiMutationCoordinator mutations)
         {
             _colonistService = colonistService;
             _cachingService = cachingService;
+            _mutations = mutations;
         }
 
         [Get("/api/v1/colonists")]
@@ -168,8 +170,9 @@ namespace RIMAPI.Controllers
                 };
             }
 
-            var result = _colonistService.SetTimeAssignment(body);
-            await context.SendJsonResponse(result);
+            await _mutations.SendAsync(context, body, body != null && body.DryRun,
+                () => _colonistService.SetTimeAssignment(body),
+                result => result.Data != null && result.Data.ContainsKey("applied") && (bool)result.Data["applied"]);
         }
 
         [Get("/api/v1/outfits")]

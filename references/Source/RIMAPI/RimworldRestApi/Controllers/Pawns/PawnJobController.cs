@@ -10,10 +10,12 @@ namespace RIMAPI.Controllers
     public class PawnJobController
     {
         private readonly IPawnJobService _pawnJobService;
+        private readonly AiMutationCoordinator _mutations;
 
-        public PawnJobController(IPawnJobService pawnJobService)
+        public PawnJobController(IPawnJobService pawnJobService, AiMutationCoordinator mutations)
         {
             _pawnJobService = pawnJobService;
+            _mutations = mutations;
         }
 
         [Post("/api/v1/pawn/job")]
@@ -68,8 +70,8 @@ namespace RIMAPI.Controllers
         public async Task RunWorkQueueAction(HttpListenerContext context)
         {
             var body = await context.Request.ReadBodyAsync<WorkQueueRequestDto>();
-            var result = _pawnJobService.RunWorkQueueAction(body);
-            await context.SendJsonResponse(result);
+            await _mutations.SendAsync(context, body, body != null && body.DryRun,
+                () => _pawnJobService.RunWorkQueueAction(body), r => r.Success);
         }
 
         [Post("/api/v1/pawn/combat-policy")]
