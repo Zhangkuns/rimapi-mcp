@@ -6,6 +6,17 @@
 
 本页描述玩家主教义（`Faction.OfPlayer.ideos.PrimaryIdeo`）中 `Precept_Ritual` 实例的读取、资格回读和正常启动。写入路径为 HTTP → 游戏主线程 → 该实例的实际 `behavior.TryExecuteOn` / 虚 `CreateLordJob`，不手造基类 Lord，不使用 `AddObligation`、调试启动或强制结算。当前有 **anytime Festival / `CelebrationPartyChat`**、**`Conversion`** 与 **`LeaderSpeech`** 三个普通正例均 accepted_with_limits；RoleChange720 任命/默认移除亦已限定验收，见 [修复记录](../references/reviews/2026-11-07-g31-c2-role-runner-repair.md)；TreeConnection725 正常连接亦已限定验收，见[修复记录](../references/reviews/2026-11-07-g31-c2-tree-fixture-repair.md)。其它角色、目标、`RitualBehaviorWorker` 子类、取消/中断和保存加载见“未覆盖”。
 
+## 2026-11-16 结果配置、强制结果与读回边界
+
+用户以天灯类仪式询问内容、奖励、人员/目标与最终结果控制。本次仅静态核对，结论见[核对记录](../references/reviews/2026-11-16-ritual-outcome-audit.md)；没有实现新接口或重跑游戏。
+
+- 仪式类型：`precepts?include_add_options=true`发现合法`ritual_patterns`，新增时经`reform/precept`的`ritual_pattern`选择。`ritual/config`不修改已有实例的pattern。
+- 奖励配置：本页末尾`GET/POST ritual/config`的`attachable_outcome_effect`选择附加奖励种类；GET的`attachable_outcomes`列可选Def及`can_attach/reason`。这不会保证达到奖励所要求的评级，或保证奖励worker的随机/资格分支成功。
+- 人员和目标：`ritual/start`已有`thing_id/target_x/target_z`、`roles/role_assignments/spectators/exclude`；先用status/dry读回原生资格。
+- **指定最终评级/保证奖励触发：当前没有对应API。** 天灯`GetOutcome`按实际质量加权随机选择结果；其正面结果的访客分支另有随机判定。正常举办与奖励配置不能固定这些选择，debug原生动作白名单也没有该控制。后续强制结果能力须单独明确debug语义，不冒称正常UI选择。
+- **完整结果读回仍有缺口。** 当前准确`run_id`保存完成/取消/中断、参与者终态记忆及特定仪式结果，但通用天灯路径未保存实际抽中possibility、最终quality、附加奖励是否实际执行成功及访客/礼物对象与该run的关联。终态记忆是当时读值，不能替代完整奖励回执。
+- 原生开始窗口的质量因素、预计质量范围、各评级概率与奖励适用说明尚未完整投影到status/dry；此为新增登记的观察缺口，不把只允许开始或记忆字段当完整流程覆盖。
+
 旧只读合同（`GET /api/v1/dlc/ideology/ritual`）保持兼容；新增 `ritual_id` 和 status/start。实现入口见 [控制器](../../../Source/RIMAPI/RimworldRestApi/Controllers/System/RitualControlController.cs)、[服务](../../../Source/RIMAPI/RimworldRestApi/Services/System/RitualControl/RitualControlService.cs) 与 [请求 DTO](../../../Source/RIMAPI/RimworldRestApi/Models/DlcIdeoDtos.cs)。
 
 ## 实例键
