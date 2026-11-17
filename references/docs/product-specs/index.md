@@ -1,6 +1,6 @@
 # 产品合同索引
 
-维护：Codex；核对：2026-11-16；状态：当前，本轮UI与环境差集已实现/限定核销，API语义及统一账本。
+维护：Codex；核对：2026-11-17；状态：当前，本轮UI与环境差集已实现/限定核销，API语义及统一账本。
 
 合同描述调用者可依赖的行为；完成度另见 [质量状态](../QUALITY_SCORE.md)、[DLC 操作矩阵](dlc-operation-matrix.md)。
 当前剩余逐项维护在[完整清单](five-dlc-remaining-checklist.md)，概览见[缺口摘要](dlc-gap-audit.md)。API 页面中的上游 YAML 统计不等于 fork 的完整运行路由数。
@@ -16,6 +16,7 @@
 | Core 正常结局 | [胜利读回与结束字幕](../api/core-game-ending.md) |
 | Core 人物与敌人状态读回 | [人物医疗/体型与地图敌人汇总](../api/core-pawn-readback.md) |
 | Core 施工与畜栏 | [施工计划](../api/construction-status.md)、[畜栏/拴绳读回与正常牵引](../api/animal-pens.md) |
+| Core 指定施工对象即时完成（debug） | [construction.complete](../api/construction-complete.md)；按现有ID原生完成并读回，非paste/正常搬料施工 |
 | Core 地面储存与日程 | [zone/building完整过滤与复制](../api/shared-storage-settings.md)、[24小时读回与批量编辑](../api/colonist-schedules.md) |
 | Core 随身药品与方案名称 | [人物Medicine携带目标、四类既有方案重命名](../api/medicine-carry-and-policy-rename.md) |
 | Core 服装政策 | [outfit](../api/outfit-policy.md) |

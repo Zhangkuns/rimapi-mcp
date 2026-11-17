@@ -12,5 +12,8 @@ namespace RIMAPI.Models
         public float? Value { get; set; }
         public bool DryRun { get; set; }
         public int? ExpectedProcessId { get; set; }
+        /// <summary>Existing construction ThingID or numeric thingIDNumber.</summary>
+        public string ThingId { get; set; }
+        public int? MapId { get; set; }
     }
 }

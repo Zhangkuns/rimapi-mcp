@@ -14,13 +14,14 @@
 | action | 参数 | 原生入口 |
 |---|---|---|
 | `pawn.certainty.set` | `pawn_id`, `value`（0..1） | `Debug_ReduceCertainty(before - value)` |
+| `construction.complete` | `thing_id`；可选`map_id/pawn_id` | 蓝图`TryReplaceWithSolidThing`、Frame`CompleteConstruction`；重装另走`MinifyUtility.MakeMinified`，见[准确合同](api/construction-complete.md) |
 | `ideo.precept.add` | `ideo_id`, `def_name` | `PreceptMaker.MakePrecept` + `Ideo.AddPrecept` |
 | `ideo.precept.remove` | `ideo_id`, `precept_id` 或唯一 `def_name` | `Ideo.RemovePrecept` |
 | `anomaly.level.set` | `def_name`（MonolithLevelDef），需已生成巨石 | `Find.Anomaly.SetLevel(def, false)` |
 | `world.landmark.add/remove` | `tile`, `layer`（默认 0）；添加需 `def_name` | `WorldLandmarks.AddLandmark/RemoveLandmark` |
 | `world.tile.mutator.add/remove` | `tile`, `layer`（默认 0）, `def_name` | `Tile.AddMutator/RemoveMutator` |
 
-前三项要求 Ideology，巨石要求 Anomaly，世界项要求 Odyssey。Def 可通过 `/api/v1/defs?type=PreceptDef`、`MonolithLevelDef`、`LandmarkDef`、`TileMutatorDef` 查询。移除指定 precept 时从动作清单取得 `precept_id`，同名多个实例不会任意选一个。重复添加相同 precept 为无操作；地标占位冲突需显式移除。
+确定度与precept项要求 Ideology，巨石要求 Anomaly，世界项要求 Odyssey；施工完成为Core调试动作。Def 可通过 `/api/v1/defs?type=PreceptDef`、`MonolithLevelDef`、`LandmarkDef`、`TileMutatorDef` 查询。移除指定 precept 时从动作清单取得 `precept_id`，同名多个实例不会任意选一个。重复添加相同 precept 为无操作；地标占位冲突需显式移除。
 
 通用参数 `dry_run:true` 仅检查请求和已有状态，不生成 precept、不调用变更方法、不运行地图变体 worker、不消耗随机数。世界添加的 worker 地形适用性只在实际执行前检查，因此预检成功不保证地形适用。可选 `expected_process_id` 防止调用到重启后的进程。
 

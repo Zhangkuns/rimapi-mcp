@@ -1,12 +1,14 @@
 # 施工计划查询
 
-维护：Codex；核对：2026-11-16；状态：已实现并通过统一隔离验证；正式DLL未部署。
+维护：Codex；核对：2026-11-17；状态：已实现并通过统一隔离验证；正式DLL未部署。
 
 `GET /api/v1/builder/constructions?map_id=0` 读取整张地图；传齐 `min_x/min_z/max_x/max_z` 则读取矩形，例如：
 
 ```text
 GET /api/v1/builder/constructions?map_id=0&min_x=125&min_z=141&max_x=149&max_z=153
 ```
+
+2026-11-17新增[调试即时完成](construction-complete.md)：对本列表取得的现有ThingID调用`debug/native/execute`的`construction.complete`。本GET仍只查询，`complete:true`仍只表示枚举完整；正常`builder/blueprint`仍等待原生施工。
 
 端点在游戏主线程遍历该地图当前已生成的 `Blueprint` 和 `Frame` 原生对象。没有派系、可见性、建筑类别过滤，没有分页或静默截断。矩形两角顺序可颠倒，坐标含端点；对象的实际占地与矩形有交集即纳入，每个对象ID只出现一次。
 
