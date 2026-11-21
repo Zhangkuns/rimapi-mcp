@@ -3,6 +3,8 @@
 2026-11-13 增强。只改原生 `AreaManager` 区域格集/标签/颜色与
 `PlaySettings` 开关；不直接写 roof grid、不伪造工作。
 
+正常建屋顶可以用 `POST /api/v1/order/designate/area` 配 `type:"roof"`、`map_id`、`point_a`、`point_b`，或者从 `GET /api/v1/map/areas` 取 `kind:"BuildRoof"` 的实际 `label`，再用 `POST /api/v1/map/areas/cells` 修改指定格。划区后由小人施工。需要在调试中即时读写实际屋顶时，使用独立的[屋顶调试动作](roof-grid-debug.md)。
+
 ## 读取（增强既有 GET，不加行）
 
 `GET /api/v1/map/areas?map_id=`：每个原生 Area 返回

@@ -117,6 +117,8 @@ Requests only target the configured game; there is no shell or arbitrary-URL too
 
 The adapter uses generic read/write tools and discovers routes from the connected game's `/capabilities` on each endpoint search. New API routes or body fields do not require a separate MCP tool. Native UI controls include `/game/preferences`, `/game/key-bindings`, `/game/play-settings`, `/buildings/bill/options`, `/buildings/bill/configure`, and `/building/books` / `/building/books/eject`. Search the `game-preferences` and `ui-option-repairs` references for their contracts; read current legal choices before writing.
 
+Search for `roof-grid-debug` to edit actual roofs with `rimapi_write`. Before calling `roof.set` or `roof.clear`, check that the connected game's `/debug/native/actions` lists the action; older DLLs can expose the same route without those actions. Use `type:"roof"` with `/order/designate/area` for normal construction.
+
 Inside the RIMAPI source tree, reference discovery includes current API documents and controller/DTO files. A standalone package instead reads its bundled `references/` snapshot. After API changes, regenerate the package from the updated RIMAPI checkout, synchronize it to client installations, and reconnect MCP to load newly added reference paths. The game must also load the matching DLL: updating MCP or its reference files does not update a running game. Use live endpoint discovery to confirm availability.
 
 ## Troubleshooting

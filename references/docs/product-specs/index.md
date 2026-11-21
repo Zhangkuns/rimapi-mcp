@@ -17,6 +17,7 @@
 | Core 人物与敌人状态读回 | [人物医疗/体型与地图敌人汇总](../api/core-pawn-readback.md) |
 | Core 施工与畜栏 | [施工计划](../api/construction-status.md)、[畜栏/拴绳读回与正常牵引](../api/animal-pens.md) |
 | Core 指定施工对象即时完成（debug） | [construction.complete](../api/construction-complete.md)；按现有ID原生完成并读回，非paste/正常搬料施工 |
+| Core 实际屋顶格即时编辑（debug） | [roof.set / roof.clear](../api/roof-grid-debug.md)；显式地图与坐标、原生写入及逐格读回 |
 | Core 地面储存与日程 | [zone/building完整过滤与复制](../api/shared-storage-settings.md)、[24小时读回与批量编辑](../api/colonist-schedules.md) |
 | Core 随身药品与方案名称 | [人物Medicine携带目标、四类既有方案重命名](../api/medicine-carry-and-policy-rename.md) |
 | Core 服装政策 | [outfit](../api/outfit-policy.md) |

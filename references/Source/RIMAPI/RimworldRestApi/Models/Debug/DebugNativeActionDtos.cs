@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace RIMAPI.Models
 {
     public sealed class DebugNativeActionRequest
@@ -15,5 +17,14 @@ namespace RIMAPI.Models
         /// <summary>Existing construction ThingID or numeric thingIDNumber.</summary>
         public string ThingId { get; set; }
         public int? MapId { get; set; }
+        public List<DebugRoofCell> Cells { get; set; }
+        public DebugRoofCell PointA { get; set; }
+        public DebugRoofCell PointB { get; set; }
+    }
+
+    public sealed class DebugRoofCell
+    {
+        public int? X { get; set; }
+        public int? Z { get; set; }
     }
 }

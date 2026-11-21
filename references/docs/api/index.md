@@ -23,6 +23,7 @@ AI fork: see the [current control contracts](ai-control-contracts.md) and [nativ
 Quest player choices and Archonexus restart/core control: [contract](archonexus.md).
 G-16 is delivered; game-memory idempotency has a bounded contract. Current Core,
 DLC, native debug and UI documentation is indexed in [product contracts](../product-specs/index.md).
+For direct map roof changes with per-cell readback, see [native roof editing](roof-grid-debug.md). For normal construction zones, see [map areas](core-areas.md).
 Native UI option repairs are documented in [bill/filter/bed/facility/bookcase/blueprint controls](ui-option-repairs.md); preferences, key bindings, and native map/world display flags are in [game preferences](game-preferences.md). The [local MCP guide](../../mcp/README.md) explains live route discovery and reference snapshot updates.
 See [current state](../harness/current-state.md) for validation and deployment,
 and [plans](../PLANS.md) for remaining work. YAML-derived totals above do not

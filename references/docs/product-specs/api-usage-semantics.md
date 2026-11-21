@@ -30,6 +30,7 @@
 | 正常荣誉/授衔任务与仪式、许可购买/使用 | `POST /dlc/royalty/title`直接授衔 | [头衔](../api/royalty-title.md)与[许可](../api/royalty-permits.md)不互作验收 |
 | 正常理念改革、角色/仪式与改信工作 | `/debug/native/execute`直接改certainty/precept | 正常改革仍检查原版资格；[debug合同](../debug-native-actions.md)明确绕过语义 |
 | `GET /map/conditions`观察当前条件 | `POST/DELETE /map/conditions`强制添加/移除 | 相同path的读取和写入用途不同 |
+| `/order/designate/area` 的 `type:roof` 划区后由小人施工 | `/debug/native/execute` 的 `roof.set` / `roof.clear` | [调试动作](../api/roof-grid-debug.md)直接修改实际屋顶格，与区域格集分开 |
 | 正常查询/业务API取得对象和终态 | `/ui/controls`、`/ui/targets/*`及Cua | UI观测/聚焦/点击是独立验证路径，不代替纯API合同 |
 
 ## 能力字段与实际权限

@@ -27,6 +27,14 @@
 
 其他接口必须按具体合同选择参数位置。`dry_run:true` 只放 JSON body，且仅在明确支持的接口使用。旧接口不因接入 MCP 就具备预演或幂等。
 
+正常建屋顶用 `/order/designate/area` 的 `type:"roof"` 划区并等待小人施工。仅在用户明确要求立即改屋顶时，先读 `/debug/native/actions` 确认 `roof.set` / `roof.clear` 可用，再通过 `rimapi_write` 发送请求，例如：
+
+```json
+{"method":"POST","path":"/debug/native/execute","body":{"action":"roof.set","map_id":0,"def_name":"RoofConstructed","cells":[{"x":100,"z":100}],"dry_run":true}}
+```
+
+确认地图、格子和预演后再正式写入；从 `after` 读回实际屋顶，不能用区域标记判断完工。完整参数见 `roof-grid-debug` 参考。
+
 ## 原生 UI 选项与环境/显示
 
 先用 `rimapi_search_endpoints` 确认运行中游戏已提供所需路由，再搜索 `game-preferences` 或 `ui-option-repairs` 参考读取合同。通用 `rimapi_read` / `rimapi_write` 可直接调用这些接口：

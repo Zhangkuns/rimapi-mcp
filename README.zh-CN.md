@@ -117,6 +117,8 @@ codex mcp add rimapi -- \
 
 适配器使用通用读写工具，每次搜索接口时从所连接游戏的 `/capabilities` 发现实时路由。新增路由或 body 字段无需单独新增 MCP 工具。原生 UI 控制包括 `/game/preferences`、`/game/key-bindings`、`/game/play-settings`、`/buildings/bill/options`、`/buildings/bill/configure` 和 `/building/books` / `/building/books/eject`。搜索 `game-preferences`、`ui-option-repairs` 参考阅读合同，写入前先读取当前合法选项。
 
+即时编辑实际屋顶可用 `rimapi_write`，搜索 `roof-grid-debug` 读参数。先用 `/debug/native/actions` 确认游戏已支持 `roof.set` 或 `roof.clear`；旧 DLL 可能有同一个路由，但没有新动作。正常施工仍用 `/order/designate/area` 的 `type:"roof"` 划区。
+
 在 RIMAPI 源码树内，参考发现会纳入当前 API 文档及控制器/DTO；独立包读取随包的 `references/` 快照。API 改动后，应从更新后的 RIMAPI checkout 重新打包、同步客户端安装目录，再重连 MCP 载入新增参考路径。游戏也必须加载对应 DLL：更新 MCP 或参考文件不会升级运行中的游戏。实际可用性以实时接口发现为准。
 
 ## 排障

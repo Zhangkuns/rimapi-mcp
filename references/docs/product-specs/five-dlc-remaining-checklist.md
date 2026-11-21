@@ -37,6 +37,8 @@ UI-E01音画/显示、UI-E02语言/输入/键位、UI-E03原生底栏均已按�
 
 ## 前轮已交付与历史账本
 
+2026-11-20 ROOF-D01 已交付：[屋顶调试动作](../api/roof-grid-debug.md)按坐标设置、替换或清除实际 RoofDef，隔离副本 23 条 HTTP 与原生读回、重放事件和清理通过。正常建造区域接口继续使用，参见[C-21 合同](../api/core-areas.md)；本次不核销正常施工工作。
+
 2026-11-17 BLD-D01调试能力已交付：`construction.complete`按现有蓝图/Frame ID复用原生转换/完成、安装重装沿原物，8类终态/33HTTP/dry/重放/事件通过，tick不推进，现场清理/6保护文件保持。见[合同](../api/construction-complete.md)、[限定验收](../references/reviews/2026-11-17-construction-complete.md)。这不核销正常施工/RitualSpot问题，也不关闭上方RIT-01/02/D01。
 
 2026-11-16 附加交付：[六组API缺口统一修复](../references/reviews/2026-11-16-six-api-gaps.md)覆盖施工完整清单、畜栏与正常牵引、zone/building完整储存、24小时批量日程、人物原生Medicine携带目标、四类既有方案按ID改名。统一DLL0d7ef7a6…157HTTP通过，旧失败及未测边界保留；[完成计划](../exec-plans/completed/2026-11-16-construction-pen-readback.md)。此登记不重写旧矩阵的原日期、不把路由数或原账本归零解释为全功能完成率。
