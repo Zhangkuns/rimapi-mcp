@@ -67,7 +67,7 @@ fork的精确method/path合同集合以`Core/Ai/AiEndpointContracts.cs`和实际
 | 任务移除 | DELETE /quests | quest_id,dry_run | 从管理器移除；不是恢复任务已触发的全部副作用 |
 | 语义控件 | GET /ui/controls、GET /ui/controls/resolve | 见 [UI 合同](../ui-semantic-bridge.md) | 观察真实区域和上下文；不执行按钮业务回调 |
 | 空间目标 | GET /ui/targets/resolve、POST /ui/targets/focus | 见 [空间合同](../ui-spatial-targets.md) | 四类目标投影/聚焦；不等于点击或业务完成 |
-| 原生开发者动作 | GET /debug/native/actions、POST /debug/native/execute | 见 [debug 合同](../debug-native-actions.md) | 白名单直接调用原生方法，包括[即时屋顶编辑](roof-grid-debug.md)；显式调试变更，不走 Cua |
+| 原生开发者动作 | GET /debug/native/actions、POST /debug/native/execute | 见 [debug 合同](../debug-native-actions.md) | 白名单直接调用原生方法，包括[即时屋顶编辑](roof-grid-debug.md)和[整堆物品移动](item-move-debug.md)；显式调试变更，不走 Cua |
 | 调试保护 | GET/POST /debug/invulnerability | POST enabled | 当前 Game 内开关，加载重置；[保护范围](../debug-invulnerability.md) |
 
 新控制 DTO 的 pawn_id 是 string，例 `"321"`；thing_id 和 map_id 按 DTO 是整数。

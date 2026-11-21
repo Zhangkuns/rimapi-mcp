@@ -119,6 +119,8 @@ codex mcp add rimapi -- \
 
 即时编辑实际屋顶可用 `rimapi_write`，搜索 `roof-grid-debug` 读参数。先用 `/debug/native/actions` 确认游戏已支持 `roof.set` 或 `roof.clear`；旧 DLL 可能有同一个路由，但没有新动作。正常施工仍用 `/order/designate/area` 的 `type:"roof"` 划区。
 
+把已有地面物品整堆移到指定格，也可用 `rimapi_write`。先用 `/debug/native/actions` 确认 `item.move` 可用，再搜索 `item-move-debug` 读参数。
+
 在 RIMAPI 源码树内，参考发现会纳入当前 API 文档及控制器/DTO；独立包读取随包的 `references/` 快照。API 改动后，应从更新后的 RIMAPI checkout 重新打包、同步客户端安装目录，再重连 MCP 载入新增参考路径。游戏也必须加载对应 DLL：更新 MCP 或参考文件不会升级运行中的游戏。实际可用性以实时接口发现为准。
 
 ## 排障

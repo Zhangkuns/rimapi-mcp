@@ -35,6 +35,14 @@
 
 确认地图、格子和预演后再正式写入；从 `after` 读回实际屋顶，不能用区域标记判断完工。完整参数见 `roof-grid-debug` 参考。
 
+即时移动地面物品时，确认 `/debug/native/actions` 含 `item.move`，从 `/map/things/radius` 取得原堆 `thing_id`，用 `rimapi_write` 发送预演：
+
+```json
+{"method":"POST","path":"/debug/native/execute","body":{"action":"item.move","map_id":0,"thing_id":12345,"x":100,"z":101,"dry_run":true}}
+```
+
+正式执行后核对 `after` 的堆 ID、数量和坐标。完整参数和放置条件见 `item-move-debug` 参考。
+
 ## 原生 UI 选项与环境/显示
 
 先用 `rimapi_search_endpoints` 确认运行中游戏已提供所需路由，再搜索 `game-preferences` 或 `ui-option-repairs` 参考读取合同。通用 `rimapi_read` / `rimapi_write` 可直接调用这些接口：

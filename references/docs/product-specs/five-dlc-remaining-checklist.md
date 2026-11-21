@@ -37,6 +37,8 @@ UI-E01音画/显示、UI-E02语言/输入/键位、UI-E03原生底栏均已按�
 
 ## 前轮已交付与历史账本
 
+2026-11-20 ITEM-D01 已交付：[整堆移动调试动作](../api/item-move-debug.md)按同图物品 ID 和精确坐标移动原堆，22 条 HTTP、原生读回和隔离清理通过。正常搬运流程独立记录。
+
 2026-11-20 ROOF-D01 已交付：[屋顶调试动作](../api/roof-grid-debug.md)按坐标设置、替换或清除实际 RoofDef，隔离副本 23 条 HTTP 与原生读回、重放事件和清理通过。正常建造区域接口继续使用，参见[C-21 合同](../api/core-areas.md)；本次不核销正常施工工作。
 
 2026-11-17 BLD-D01调试能力已交付：`construction.complete`按现有蓝图/Frame ID复用原生转换/完成、安装重装沿原物，8类终态/33HTTP/dry/重放/事件通过，tick不推进，现场清理/6保护文件保持。见[合同](../api/construction-complete.md)、[限定验收](../references/reviews/2026-11-17-construction-complete.md)。这不核销正常施工/RitualSpot问题，也不关闭上方RIT-01/02/D01。

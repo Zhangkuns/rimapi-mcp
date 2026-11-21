@@ -119,6 +119,8 @@ The adapter uses generic read/write tools and discovers routes from the connecte
 
 Search for `roof-grid-debug` to edit actual roofs with `rimapi_write`. Before calling `roof.set` or `roof.clear`, check that the connected game's `/debug/native/actions` lists the action; older DLLs can expose the same route without those actions. Use `type:"roof"` with `/order/designate/area` for normal construction.
 
+Search for `item-move-debug` to move an existing item stack to an exact cell with `rimapi_write`. Check that the game's `/debug/native/actions` lists `item.move` before calling it.
+
 Inside the RIMAPI source tree, reference discovery includes current API documents and controller/DTO files. A standalone package instead reads its bundled `references/` snapshot. After API changes, regenerate the package from the updated RIMAPI checkout, synchronize it to client installations, and reconnect MCP to load newly added reference paths. The game must also load the matching DLL: updating MCP or its reference files does not update a running game. Use live endpoint discovery to confirm availability.
 
 ## Troubleshooting
