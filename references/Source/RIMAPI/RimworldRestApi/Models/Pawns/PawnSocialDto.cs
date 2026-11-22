@@ -35,6 +35,8 @@ namespace RIMAPI.Models
         public string InteractionLabel { get; set; }
         public string Text { get; set; }
         public int Ticks { get; set; }
+        public int TickAbs { get; set; }
+        public int AgeTicks { get; set; }
         public string TimeAgo { get; set; }
     }
 
@@ -78,6 +80,96 @@ namespace RIMAPI.Models
     {
         public int PawnId { get; set; }
         public List<PawnRelationEntryDto> Relations { get; set; }
+    }
+
+    // ---- PAWN-Q01 merged log ----
+    public class PawnLogDto
+    {
+        public int PawnId { get; set; }
+        public string ThingId { get; set; }
+        public int TicksGame { get; set; }
+        public int TicksAbs { get; set; }
+        public string TimeBasis { get; set; }
+        public string Scope { get; set; }
+        public int? SinceTick { get; set; }
+        public int? UntilTick { get; set; }
+        public int Count { get; set; }
+        public int TotalSocial { get; set; }
+        public int TotalBattle { get; set; }
+        public int NegativeAgeCount { get; set; }
+        public List<PawnLogEntryDto> Entries { get; set; }
+    }
+
+    public class PawnLogEntryDto
+    {
+        public int Order { get; set; }
+        public string Kind { get; set; } // social, battle
+        public string EntryType { get; set; }
+        public int LogId { get; set; }
+        public int TickAbs { get; set; }
+        public int AgeTicks { get; set; }
+        public float AgeDays { get; set; }
+        public string TimeAgo { get; set; }
+        public string Text { get; set; }
+        public int InitiatorId { get; set; }
+        public string InitiatorName { get; set; }
+        public int RecipientId { get; set; }
+        public string RecipientName { get; set; }
+        public string InteractionDefName { get; set; }
+        public string InteractionLabel { get; set; }
+        public string BattleId { get; set; }
+        public string BattleName { get; set; }
+        public int? BattleIndex { get; set; }
+        public bool? Hit { get; set; }
+        public bool? Deflected { get; set; }
+        public List<string> DamagedParts { get; set; }
+        public bool ShowInCompactView { get; set; }
+    }
+
+    // ---- PAWN-Q03 social / beliefs ----
+    public class PawnSocialOverviewDto
+    {
+        public int PawnId { get; set; }
+        public string ThingId { get; set; }
+        public string Name { get; set; }
+        public string Identity { get; set; }
+        public string Faction { get; set; }
+        public PawnBeliefsDto Beliefs { get; set; }
+        public List<PawnSocialEntryDto> Others { get; set; }
+        public List<PawnRelationEntryDto> DirectRelations { get; set; }
+    }
+
+    public class PawnSocialEntryDto
+    {
+        public int OtherPawnId { get; set; }
+        public string ThingId { get; set; }
+        public string Name { get; set; }
+        public string Identity { get; set; }
+        public string Faction { get; set; }
+        public int OpinionOfOther { get; set; }
+        public int OpinionOfMe { get; set; }
+        public List<PawnRelationEntryDto> Relations { get; set; }
+        public string RoleDefName { get; set; }
+        public string RoleLabel { get; set; }
+    }
+
+    public class PawnBeliefsDto
+    {
+        public int PawnId { get; set; }
+        public string ThingId { get; set; }
+        public bool HasIdeo { get; set; }
+        public int? IdeoId { get; set; }
+        public string IdeoName { get; set; }
+        public float Certainty { get; set; }
+        public float CertaintyPercent { get; set; }
+        public float CertaintyChangePerDay { get; set; }
+        public float CertaintyChangePercentPerDay { get; set; }
+        public bool Prisoner { get; set; }
+        public bool Slave { get; set; }
+        public string ConversionMode { get; set; }
+        public bool ConversionEnabled { get; set; }
+        public string RoleDefName { get; set; }
+        public string RoleLabel { get; set; }
     }
 
     public class PawnRelationEntryDto

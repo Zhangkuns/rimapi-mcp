@@ -13,12 +13,20 @@ The game computer must already run a compatible RIMAPI service. The adapter can 
 
 ## Install
 
+Use `mcp/` in a RIMAPI checkout or clone the standalone package:
+
 ```sh
 git clone https://github.com/Zhangkuns/rimapi-mcp.git
 cd rimapi-mcp
+```
+
+From the directory containing `rimapi_server.py`, install the dependencies and
+create your first local configuration (preserve any existing `.env`):
+
+```sh
 python3 -m venv .venv
 .venv/bin/python -m pip install -r requirements.txt
-cp .env.example .env
+cp -n .env.example .env
 chmod 600 .env
 ```
 
@@ -105,23 +113,40 @@ Ask the AI to call `rimapi_status` and `rimapi_gameplay_guide` first, confirm th
 | Tool | Purpose |
 | --- | --- |
 | `rimapi_status` | Version, DLC, authentication, and protected game state |
-| `rimapi_search_endpoints` | Search the connected game's current routes and contract metadata |
-| `rimapi_search_reference` / `rimapi_read_reference` | Find bundled contracts, examples, controllers, and request DTOs |
-| `rimapi_read` / `rimapi_write` | GET and explicit writes, with separate query/body and optional idempotency key |
+| `rimapi_search_endpoints` | Search the connected game's `/capabilities` by route, method or feature |
+| `rimapi_search_reference` / `rimapi_read_reference` | Find shipped contracts, the static route index, controllers and request DTOs; read matches by path and line |
+| `rimapi_read` / `rimapi_write` | GET or explicit POST/PUT/PATCH/DELETE; pass `query` and JSON `body` separately |
 | `rimapi_screenshot` | Return an actual MCP image when a map is loaded |
 | `rimapi_gameplay_guide` | Read the normal-play instructions |
 
-Requests only target the configured game; there is no shell or arbitrary-URL tool. Writes are never automatically retried. A timeout means the outcome is unknown: read current state before retrying. HTTP 200 or a queued operation does not prove a pawn job has finished. Read the reference before selecting parameters; an empty runtime `parameters` list does not mean an endpoint has no inputs.
+After `rimapi_status`, search the live catalog, then look up the exact route in the
+references before calling it. An empty `parameters` list does not mean an endpoint
+has no inputs. For developer actions, also read `/debug/native/actions`.
+
+`rimapi_read` issues GET, not a guarantee of no side effects (`/core/docs/export`
+writes a file on the game host). Use direct streaming HTTP for SSE (`/api/v1/events`).
+Writes are not retried automatically; after a timeout, check the actual target state.
+Use `idempotency_key` only on routes that support it. HTTP 200 or `queued` does not
+prove a pawn job has finished. See [gameplay examples](PLAYING.md), including husbandry.
 
 ## API and reference updates
 
-The adapter uses generic read/write tools and discovers routes from the connected game's `/capabilities` on each endpoint search. New API routes or body fields do not require a separate MCP tool. Native UI controls include `/game/preferences`, `/game/key-bindings`, `/game/play-settings`, `/buildings/bill/options`, `/buildings/bill/configure`, and `/building/books` / `/building/books/eject`. Search the `game-preferences` and `ui-option-repairs` references for their contracts; read current legal choices before writing.
+There is no separate MCP tool per REST route. The generic tools handle new routes;
+the game must load the DLL that implements them. Updating the adapter or bundled
+references does not update the game. Confirm the running version and catalog first.
 
-Search for `roof-grid-debug` to edit actual roofs with `rimapi_write`. Before calling `roof.set` or `roof.clear`, check that the connected game's `/debug/native/actions` lists the action; older DLLs can expose the same route without those actions. Use `type:"roof"` with `/order/designate/area` for normal construction.
+The checkout reads its current docs and allowlisted C# files. The standalone
+package reads a snapshot from `references/`. To create a fresh standalone copy,
+run from the updated RIMAPI checkout root after installing the MCP dependencies:
 
-Search for `item-move-debug` to move an existing item stack to an exact cell with `rimapi_write`. Check that the game's `/debug/native/actions` lists `item.move` before calling it.
+```sh
+python3 tools/generate_api_routes.py --check
+mcp/.venv/bin/python mcp/package.py /absolute/path/to/new-rimapi-mcp
+```
 
-Inside the RIMAPI source tree, reference discovery includes current API documents and controller/DTO files. A standalone package instead reads its bundled `references/` snapshot. After API changes, regenerate the package from the updated RIMAPI checkout, synchronize it to client installations, and reconnect MCP to load newly added reference paths. The game must also load the matching DLL: updating MCP or its reference files does not update a running game. Use live endpoint discovery to confirm availability.
+Update the client installation separately, keeping its private `.env`, then
+reconnect MCP so newly added reference paths are indexed. Search for
+`docs/api/index.md` or `docs/api/routes.md` in the reference tools.
 
 ## Troubleshooting
 

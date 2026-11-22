@@ -707,5 +707,19 @@ namespace RIMAPI.Controllers
                 && changed is bool
                 && (bool)changed;
         }
+
+        [Post("/api/v1/pawn/ideo/set")]
+        [EndpointMetadata("WORK-W03: set a colony prisoner's current ideoligion directly")]
+        public async Task SetPrisonerIdeo(HttpListenerContext context)
+        {
+            var body = await context.Request.ReadBodyAsync<PawnSetIdeoRequest>();
+            await _mutations.SendAsync(
+                context,
+                body,
+                body != null && body.DryRun,
+                () => _service.SetPrisonerIdeo(body),
+                Changed
+            );
+        }
     }
 }

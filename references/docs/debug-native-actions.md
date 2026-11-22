@@ -15,8 +15,12 @@
 |---|---|---|
 | `pawn.certainty.set` | `pawn_id`, `value`（0..1） | `Debug_ReduceCertainty(before - value)` |
 | `construction.complete` | `thing_id`；可选`map_id/pawn_id` | 蓝图`TryReplaceWithSolidThing`、Frame`CompleteConstruction`；重装另走`MinifyUtility.MakeMinified`，见[准确合同](api/construction-complete.md) |
+| `research.complete` | `def_name`（ResearchProjectDef） | `ResearchManager.FinishProject`；连同未完成的显式前置，见[研究完成合同](api/research-complete.md) |
+| `plant.cut` | `map_id`, `thing_id`（现有树木） | 原生 `Plant.YieldNow`、`GenPlace.TryPlaceThing`、`Plant.TrySpawnStump`、`Thing.Destroy`；见[即时砍伐合同](api/plant-cut.md) |
 | `roof.set` / `roof.clear` | `map_id`；`cells` 或 `point_a` + `point_b`；设置时传 `def_name` | `RoofGrid.SetRoof`；[屋顶合同](api/roof-grid-debug.md) |
 | `item.move` | `map_id`, `thing_id`, `x`, `z` | `Thing.DeSpawn`、位置赋值、`Thing.SpawnSetup`；[整堆移动合同](api/item-move-debug.md) |
+| `item.transfer` | `map_id`, `thing_id`, `source`, `destination` | 保留同一整堆，通过原生格子登记或 `ThingOwner` 转移；[位置及容量查询合同](api/item-transfer-debug.md) |
+| `storage.shelf_capacity.set` | `stack_capacity`（每座总堆位，2–1000） | 存档级覆盖普通双格货架的原生格子与总容量；[货架堆位合同](api/shelf-capacity.md) |
 | `ideo.precept.add` | `ideo_id`, `def_name` | `PreceptMaker.MakePrecept` + `Ideo.AddPrecept` |
 | `ideo.precept.remove` | `ideo_id`, `precept_id` 或唯一 `def_name` | `Ideo.RemovePrecept` |
 | `anomaly.level.set` | `def_name`（MonolithLevelDef），需已生成巨石 | `Find.Anomaly.SetLevel(def, false)` |

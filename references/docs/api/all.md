@@ -1,6 +1,8 @@
-# 📚 Complete API Reference (All Endpoints)
+# Upstream YAML Reference
 
-This page contains the complete, unabridged list of all RIMAPI endpoints.
+This page renders all entries in the upstream YAML reference, not all endpoints
+in this fork. See the [API guide](index.md), [static route index](routes.md), and
+[live discovery](../capabilities/capabilities.md) for current coverage and usage.
 
 {% from 'api/_api_template.md' import render_controllers with context %}
 {% set lang = config.theme.language if config.theme.language in api_data else 'en' %}

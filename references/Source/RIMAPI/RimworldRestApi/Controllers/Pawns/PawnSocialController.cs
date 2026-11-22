@@ -97,5 +97,38 @@ namespace RIMAPI.Controllers
             var result = _socialService.RemoveRelation(request);
             await context.SendJsonResponse(result);
         }
+
+        [Get("/api/v1/pawns/log")]
+        [EndpointMetadata("PAWN-Q01: merged social and battle log for one pawn, filtered by scope and tick range")]
+        public async Task GetPawnLog(HttpListenerContext context)
+        {
+            var pawnId = RequestParser.GetIntParameter(context, "pawn_id");
+            var limit = RequestParser.HasParameter(context, "limit") ? RequestParser.GetIntParameter(context, "limit") : 50;
+            var scope = RequestParser.HasParameter(context, "scope") ? RequestParser.GetStringParameter(context, "scope") : "all";
+            int? since = RequestParser.HasParameter(context, "since_tick")
+                ? RequestParser.GetIntParameter(context, "since_tick") : (int?)null;
+            int? until = RequestParser.HasParameter(context, "until_tick")
+                ? RequestParser.GetIntParameter(context, "until_tick") : (int?)null;
+            var result = _socialService.GetPawnLog(pawnId, limit, scope, since, until);
+            await context.SendJsonResponse(result);
+        }
+
+        [Get("/api/v1/pawns/social")]
+        [EndpointMetadata("PAWN-Q03: native social roster, actual relations, bidirectional opinion, identity and role")]
+        public async Task GetPawnSocialOverview(HttpListenerContext context)
+        {
+            var pawnId = RequestParser.GetIntParameter(context, "pawn_id");
+            var result = _socialService.GetPawnSocialOverview(pawnId);
+            await context.SendJsonResponse(result);
+        }
+
+        [Get("/api/v1/pawns/ideology")]
+        [EndpointMetadata("PAWN-Q03: current ideoligion, certainty, daily certainty change and prisoner conversion mode")]
+        public async Task GetPawnIdeology(HttpListenerContext context)
+        {
+            var pawnId = RequestParser.GetIntParameter(context, "pawn_id");
+            var result = _socialService.GetPawnIdeology(pawnId);
+            await context.SendJsonResponse(result);
+        }
     }
 }

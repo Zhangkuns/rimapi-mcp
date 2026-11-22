@@ -168,9 +168,16 @@ namespace RIMAPI.Controllers
         [EndpointMetadata("List exact body parts a surgery recipe can target on this pawn")]
         public async Task SurgeryOptions(HttpListenerContext context)
         {
+            var recipeDef = context.Request.QueryString["recipe_def"];
+            if (string.IsNullOrWhiteSpace(recipeDef))
+            {
+                await context.SendJsonResponse(
+                    ApiResult<Dictionary<string, object>>.Fail(
+                        "recipe_def is required", ApiErrorCode.BadRequest));
+                return;
+            }
             await context.SendJsonResponse(_pawnControl.SurgeryOptions(
-                context.Request.QueryString["pawn_id"],
-                context.Request.QueryString["recipe_def"]));
+                context.Request.QueryString["pawn_id"], recipeDef));
         }
 
         [Post("/api/v1/pawn/surgery/bill")]

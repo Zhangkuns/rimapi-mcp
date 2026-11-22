@@ -28,9 +28,14 @@ namespace RIMAPI.Models
     public class PawnNeedsRequest
     {
         public int PawnId { get; set; }
-        public float? Food { get; set; } // 0.0 to 1.0
+        // Legacy fields, kept compatible; values are 0.0..1.0 percentages.
+        public float? Food { get; set; }
         public float? Rest { get; set; }
         public float? Mood { get; set; }
+        // WORK-W05: one exact NeedDef or a map of NeedDef -> 0..1 value.
+        public string NeedDef { get; set; }
+        public float? Value { get; set; }
+        public Dictionary<string, float> Needs { get; set; }
     }
 
     // --- 4. Skills ---

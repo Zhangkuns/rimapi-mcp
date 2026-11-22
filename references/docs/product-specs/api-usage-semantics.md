@@ -33,6 +33,8 @@
 | `/order/designate/area` 的 `type:roof` 划区后由小人施工 | `/debug/native/execute` 的 `roof.set` / `roof.clear` | [调试动作](../api/roof-grid-debug.md)直接修改实际屋顶格，与区域格集分开 |
 | 原生搬运 Job | `/debug/native/execute` 的 `item.move` | [调试动作](../api/item-move-debug.md)即时把同一个地面堆移到指定格；不提交搬运任务 |
 | 正常查询/业务API取得对象和终态 | `/ui/controls`、`/ui/targets/*`及Cua | UI观测/聚焦/点击是独立验证路径，不代替纯API合同 |
+| `POST /research/target` 选择研究，小人继续工作 | [`research.complete`](../api/research-complete.md) | 直接完成指定研究及原生处理的前置，保留正常选题行为 |
+| 标记砍伐或让殖民者执行砍树工作 | [`plant.cut`](../api/plant-cut.md) | 立即砍指定树，按原生产量落地并读回，树木防砍设置继续生效 |
 
 ## 能力字段与实际权限
 

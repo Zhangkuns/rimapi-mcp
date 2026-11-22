@@ -20,8 +20,10 @@ from mcp.server import MCPServer
 HERE = Path(__file__).resolve().parent
 REFERENCE_PATTERNS = (
     "docs/api/*.md", "docs/product-specs/*.md", "docs/_api_macroses/controllers/*.yml",
-    "docs/ui-*.md", "docs/debug-native-actions.md", "docs/developer_guide/api_conventions.md",
+    "docs/capabilities/capabilities.md", "docs/developer_guide/api_conventions.md",
+    "docs/ui-*.md", "docs/debug-native-actions.md", "docs/debug-invulnerability.md",
     "Source/RIMAPI/RimworldRestApi/Controllers/**/*.cs",
+    "Source/RIMAPI/RimworldRestApi/BaseControllers/**/*.cs",
     "Source/RIMAPI/RimworldRestApi/Models/**/*.cs",
     "Source/RIMAPI/RimworldRestApi/Core/HttpContext/RequestParser.cs",
 )
@@ -183,7 +185,7 @@ def create_server(settings: Settings, references: References | None = None) -> M
 
     @server.tool(annotations=readonly, structured_output=False)
     def rimapi_search_endpoints(query: str = "", method: str = "", offset: int = 0, limit: int = 20) -> types.CallToolResult:
-        """Search the live API catalog by route, description or category. Returns exact methods and feature contracts, not complete request schemas."""
+        """Search this game's capabilities catalog by route, description or category. Not a complete router inventory or request schema."""
         if offset < 0 or not 1 <= limit <= 100:
             raise ValueError("offset must be >=0 and limit must be 1..100")
         response = api.call("GET", "/capabilities")

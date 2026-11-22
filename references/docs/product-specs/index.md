@@ -11,14 +11,18 @@
 | 最终交付 / 剩余任务 | [纯API游玩合同](api-playability.md)、[操作账本](five-dlc-remaining-checklist.md)、[全功能范围计划](../exec-plans/active/five-dlc-full-function.md) |
 | 原生UI选项与API覆盖 | [静态对照报告](../references/reviews/2026-11-16-ui-api-parity.md)、[机器证据](../references/reviews/2026-11-16-ui-api-parity.json)；具体开放状态只在操作账本维护 |
 | UI缺口修复 / 环境显示输入 | [账单/过滤/床/设施/书架/蓝图](../api/ui-option-repairs.md)、[Prefs/音画/语言/键位/显示底栏](../api/game-preferences.md)、[限定验收](../references/reviews/2026-11-16-ui-api-repair.md) |
-| API 索引 / 控制面 | [API](../api.md)、[精确能力合同](../api/ai-control-contracts.md) |
+| API 索引 / 控制面 | [API 指南](../api/index.md)、[源码路由表](../api/routes.md)、[精确能力合同](../api/ai-control-contracts.md) |
 | 重试与交易 | [幂等](../api/idempotency.md)、[交易](../api/trade-control.md) |
 | Core 正常结局 | [胜利读回与结束字幕](../api/core-game-ending.md) |
 | Core 人物与敌人状态读回 | [人物医疗/体型与地图敌人汇总](../api/core-pawn-readback.md) |
 | Core 施工与畜栏 | [施工计划](../api/construction-status.md)、[畜栏/拴绳读回与正常牵引](../api/animal-pens.md) |
 | Core 指定施工对象即时完成（debug） | [construction.complete](../api/construction-complete.md)；按现有ID原生完成并读回，非paste/正常搬料施工 |
+| Core 指定研究即时完成（debug） | [research.complete](../api/research-complete.md)；按 Def 名执行，预演列出未完成的显式前置 |
+| Core 指定树木即时砍伐（debug） | [plant.cut](../api/plant-cut.md)；按地图与 ID 执行，读回落地木材与原版树桩 |
 | Core 实际屋顶格即时编辑（debug） | [roof.set / roof.clear](../api/roof-grid-debug.md)；显式地图与坐标、原生写入及逐格读回 |
 | Core 地面物品整堆即时移动（debug） | [item.move](../api/item-move-debug.md)；显式地图、物品 ID、坐标与原堆读回 |
+| Core 储存格查询与现有物品双向转移 | [storage/contents 与 item.transfer](../api/item-transfer-debug.md)；按 ID 查格与堆位，在地图格、储存建筑和支持的容器间整堆转移 |
+| Core 普通货架堆位（debug） | [读取与统一设置](../api/shelf-capacity.md)；每座的总堆数对当前存档全部普通 `Shelf` 生效 |
 | Core 地面储存与日程 | [zone/building完整过滤与复制](../api/shared-storage-settings.md)、[24小时读回与批量编辑](../api/colonist-schedules.md) |
 | Core 随身药品与方案名称 | [人物Medicine携带目标、四类既有方案重命名](../api/medicine-carry-and-policy-rename.md) |
 | Core 服装政策 | [outfit](../api/outfit-policy.md) |

@@ -1,5 +1,21 @@
 namespace RIMAPI.Models
 {
+    public sealed class PenFoodExampleRequest
+    {
+        public string ThingId { get; set; }
+        public string AnimalDef { get; set; }
+        public bool? Displayed { get; set; }
+        public bool DryRun { get; set; }
+    }
+
+    public sealed class AnimalDesignationRequest
+    {
+        public string AnimalId { get; set; }
+        public string Designation { get; set; }
+        public bool? Enabled { get; set; }
+        public bool DryRun { get; set; }
+    }
+
     public sealed class RopeAnimalRequest
     {
         public string AnimalId { get; set; }

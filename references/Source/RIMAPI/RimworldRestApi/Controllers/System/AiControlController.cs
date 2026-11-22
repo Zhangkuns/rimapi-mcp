@@ -39,7 +39,7 @@ namespace RIMAPI.Controllers
         [EndpointMetadata("Remove matching hediffs from a pawn (all=true removes every match)")]
         public async Task RemoveHediff(HttpListenerContext context)
         {
-            var body = await context.Request.ReadBodyAsync<HediffRemoveRequest>();
+            var body = await context.Request.ReadBodyAsync<HediffInstanceRemoveRequest>();
             await _mutations.SendAsync(context, body, body != null && body.DryRun, () => _controlService.RemoveHediff(body));
         }
 
@@ -47,8 +47,16 @@ namespace RIMAPI.Controllers
         [EndpointMetadata("Set severity on matching hediffs")]
         public async Task SetHediffSeverity(HttpListenerContext context)
         {
-            var body = await context.Request.ReadBodyAsync<HediffSeverityRequest>();
+            var body = await context.Request.ReadBodyAsync<HediffInstanceSeverityRequest>();
             await _mutations.SendAsync(context, body, body != null && body.DryRun, () => _controlService.SetHediffSeverity(body));
+        }
+
+        [Post("/api/v1/pawn/hediff/remaining")]
+        [EndpointMetadata("Set remaining time on one hediff with HediffComp_Disappears (load_id)")]
+        public async Task SetHediffRemaining(HttpListenerContext context)
+        {
+            var body = await context.Request.ReadBodyAsync<HediffRemainingRequest>();
+            await _mutations.SendAsync(context, body, body != null && body.DryRun, () => _controlService.SetHediffRemaining(body));
         }
 
         [Post("/api/v1/pawn/mental-state")]

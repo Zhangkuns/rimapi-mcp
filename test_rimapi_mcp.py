@@ -165,6 +165,15 @@ class AdapterTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             refs.read(".env")
 
+    def test_reference_index_resolves_contract_and_controller(self):
+        refs = References()
+        found = {hit["path"]: hit for hit in refs.search("/pen/food", limit=50)["matches"]}
+        for path in ("docs/api/routes.md", "docs/api/animal-pens.md"):
+            self.assertIn("/pen/food", refs.read(path, found[path]["line"], 1)["text"])
+        export = refs.search("/api/v1/core/docs/export")["matches"]
+        self.assertIn("Source/RIMAPI/RimworldRestApi/BaseControllers/DocumentationController.cs",
+                      {hit["path"] for hit in export})
+
     def test_official_stdio_protocol_tools_auth_and_mutation_roundtrip(self):
         with tempfile.TemporaryDirectory() as tmp:
             env = Path(tmp) / ".env"

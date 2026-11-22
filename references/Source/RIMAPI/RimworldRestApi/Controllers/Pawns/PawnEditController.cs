@@ -39,8 +39,7 @@ namespace RIMAPI.Controllers
         public async Task EditNeeds(HttpListenerContext context)
         {
             var body = await context.Request.ReadBodyAsync<PawnNeedsRequest>();
-            var result = _pawnEditService.UpdateNeeds(body);
-            await context.SendJsonResponse(result);
+            await _mutations.RunOnMain(() => context.SendJsonResponse(_pawnEditService.UpdateNeeds(body)));
         }
 
         [Post("/api/v1/pawn/edit/skills")]
@@ -119,6 +118,83 @@ namespace RIMAPI.Controllers
             var body = await context.Request.ReadBodyAsync<PawnFactionRequest>();
             var result = _pawnEditService.UpdateFaction(body);
             await context.SendJsonResponse(result);
+        }
+        [Post("/api/v1/pawn/edit/recruitable")]
+        [EndpointMetadata("WORK-P01: set one prisoner's native Recruitable flag and read back the effective value")]
+        public async Task EditRecruitable(HttpListenerContext context)
+        {
+            var body = await context.Request.ReadBodyAsync<PawnRecruitableRequest>();
+            var result = _pawnEditService.SetRecruitable(body);
+            await context.SendJsonResponse(result);
+        }
+
+        [Post("/api/v1/pawn/edit/trait/remove")]
+        [EndpointMetadata("WORK-P01: remove one exact Trait(def, degree) and read back traits and genes")]
+        public async Task RemoveTraitExact(HttpListenerContext context)
+        {
+            var body = await context.Request.ReadBodyAsync<PawnTraitRemoveRequest>();
+            var result = _pawnEditService.RemoveTraitExact(body);
+            await context.SendJsonResponse(result);
+        }
+
+        [Post("/api/v1/pawn/edit/memory/remove")]
+        [EndpointMetadata("WORK-P01: remove one selected mood or social memory")]
+        public async Task RemoveMemory(HttpListenerContext context)
+        {
+            var body = await context.Request.ReadBodyAsync<PawnMemoryRemoveRequest>();
+            var result = _pawnEditService.RemoveMemory(body);
+            await context.SendJsonResponse(result);
+        }
+
+        [Post("/api/v1/pawn/edit/inspiration/end")]
+        [EndpointMetadata("WORK-P01: end the pawn's current inspiration")]
+        public async Task EndInspiration(HttpListenerContext context)
+        {
+            var body = await context.Request.ReadBodyAsync<PawnInspirationEndRequest>();
+            var result = _pawnEditService.EndInspiration(body);
+            await context.SendJsonResponse(result);
+        }
+
+        [Post("/api/v1/pawn/edit/backstory")]
+        [EndpointMetadata("WORK-P01: replace the childhood or adulthood backstory and read back disabled work")]
+        public async Task SetBackstory(HttpListenerContext context)
+        {
+            var body = await context.Request.ReadBodyAsync<PawnBackstoryRequest>();
+            var result = _pawnEditService.SetBackstory(body);
+            await context.SendJsonResponse(result);
+        }
+
+        [Post("/api/v1/pawn/edit/prisoner-state")]
+        [EndpointMetadata("WORK-P01: set a prisoner's resistance and/or will without recruiting")]
+        public async Task SetPrisonerState(HttpListenerContext context)
+        {
+            var body = await context.Request.ReadBodyAsync<PawnPrisonerStateRequest>();
+            var result = _pawnEditService.SetPrisonerState(body);
+            await context.SendJsonResponse(result);
+        }
+
+        [Post("/api/v1/pawn/edit/item-attributes")]
+        [EndpointMetadata("WORK-W02: set durability or quality on one exact carried item instance")]
+        public async Task EditItemAttributes(HttpListenerContext context)
+        {
+            var body = await context.Request.ReadBodyAsync<PawnItemAttributesRequest>();
+            await _mutations.RunOnMain(() => context.SendJsonResponse(_pawnEditService.UpdateItemAttributes(body)));
+        }
+
+        [Post("/api/v1/pawn/memory/add")]
+        [EndpointMetadata("WORK-W03: add one mood or social memory through native TryGainMemory")]
+        public async Task AddMemory(HttpListenerContext context)
+        {
+            var body = await context.Request.ReadBodyAsync<PawnMemoryAddRequest>();
+            await _mutations.RunOnMain(() => context.SendJsonResponse(_pawnEditService.AddMemory(body)));
+        }
+
+        [Post("/api/v1/pawn/edit/skill-xp")]
+        [EndpointMetadata("WORK-W04: set one skill's in-level experience without changing level or passion")]
+        public async Task UpdateSkillXp(HttpListenerContext context)
+        {
+            var body = await context.Request.ReadBodyAsync<PawnSkillXpRequest>();
+            await _mutations.RunOnMain(() => context.SendJsonResponse(_pawnEditService.UpdateSkillXp(body)));
         }
     }
 }

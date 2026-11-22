@@ -1,46 +1,43 @@
-{% set lang = config.theme.language if config.theme.language in api_data else 'en' %}
-{% set current_api = api_data.get(lang, api_data['en']) %}
+# RIMAPI API Guide
 
-{# --- Dynamically count endpoints --- #}
-{% set ns = namespace(endpoint_count=0) %}
-{% for controller_name, controller in current_api.controllers.items() %}
-    {% for path in controller.keys() %}
-        {% if path.startswith('/') %}
-            {% set ns.endpoint_count = ns.endpoint_count + 1 %}
-        {% endif %}
-    {% endfor %}
-{% endfor %}
+The RimWorld mod serves REST under `/api/v1`. The local stdio MCP adapter forwards
+requests to the same API; MCP does not add in-game capabilities or replace the mod.
 
-# 📚 API Reference Overview
+## Find the right reference
 
-**Version**: {{ current_api.meta.version | default('1.8.3') }}  
-**Endpoints total count**: {{ ns.endpoint_count }}
+| Question | Start here |
+| --- | --- |
+| What does this game instance advertise? | [Live discovery](../capabilities/capabilities.md): `GET /api/v1/version`, `GET /api/v1/capabilities`, then protected `GET /api/v1/game/state`. In MCP, use `rimapi_status` and `rimapi_search_endpoints`. |
+| What REST methods and paths are declared in this checkout? | [Static route index](routes.md), generated from the C# route declarations and grouped by source file. |
+| What parameters, permissions, and results should I expect? | [Product contracts](../product-specs/index.md) and [API conventions](../developer_guide/api_conventions.md). If there is no detailed contract, look up the exact route in its controller and request DTO. An empty live `parameters` list is not a request schema. |
+| What is deployed or already tested? | [Current state](../harness/current-state.md) and the [DLC operation matrix](../product-specs/dlc-operation-matrix.md). A source declaration is not deployment or acceptance evidence. |
+| How do I connect MCP and update its references? | `README.md`, `README.zh-CN.md`, and `PLAYING.md` live under `mcp/` in the checkout and at the root of the standalone package. Use `rimapi_search_reference` and `rimapi_read_reference` to consult the bundled docs and source. |
 
-!!! warning "Warning"
-    Please read our [API Conventions](../developer_guide/api_conventions.md) page to understand our `snake_case` JSON requirements and header rules before using these endpoints.
+## Domain entry points
 
-AI fork: see the [current control contracts](ai-control-contracts.md) and [native trade contract](trade-control.md). See also [outfit policy](outfit-policy.md), [idempotency](idempotency.md), the [G31 ritual instance/eligibility/start contract](ideology-ritual.md) and the [C-09 caravan formation contract](caravan-forming.md) the [C-10 caravan journey contract](caravan-journey.md) the [C-12 transport pod contract](transport-pod.md) the [C-11 caravan management contract](caravan-manage.md) the [C-39 world dialog contract](world-dialog.md) the [S-01 utility verb contract](utility-verbs.md) the [S-05 native guest policy contract](guest-policy-native.md) and [S-10 choice letter contract](letter-choices.md).
-Quest player choices and Archonexus restart/core control: [contract](archonexus.md).
-G-16 is delivered; game-memory idempotency has a bounded contract. Current Core,
-DLC, native debug and UI documentation is indexed in [product contracts](../product-specs/index.md).
-For direct map roof changes with per-cell readback, see [native roof editing](roof-grid-debug.md). For normal construction zones, see [map areas](core-areas.md).
+These are starting points; the product contract index links more detailed feature and acceptance records.
 
-To move an existing item stack to an exact cell in developer mode, see [whole-stack movement](item-move-debug.md).
-Native UI option repairs are documented in [bill/filter/bed/facility/bookcase/blueprint controls](ui-option-repairs.md); preferences, key bindings, and native map/world display flags are in [game preferences](game-preferences.md). The [local MCP guide](../../mcp/README.md) explains live route discovery and reference snapshot updates.
-See [current state](../harness/current-state.md) for validation and deployment,
-and [plans](../PLANS.md) for remaining work. YAML-derived totals above do not
-include all fork additions.
+| Area | Selected contracts |
+| --- | --- |
+| Core | [Pawn readback](core-pawn-readback.md), [construction](construction-status.md), [husbandry and feed](animal-pens.md), [storage settings](shared-storage-settings.md), [schedules](colonist-schedules.md), [trade](trade-control.md) |
+| Royalty | [Psycasts](royalty-control.md), [permits](royalty-permits.md), [titles](royalty-title.md) |
+| Ideology | [Beliefs](ideology.md), [rituals](ideology-ritual.md), [Archonexus](archonexus.md) |
+| Biotech | [Genes](biotech-genes.md), [mechs](biotech-mechs.md), [reproduction](biotech-reproduction.md) |
+| Anomaly | [Monolith](anomaly-monolith.md), [containment](anomaly-containment.md), [psychic rituals](anomaly-psychic-ritual.md) |
+| Odyssey | [Gravship](odyssey-gravship.md), [layers](odyssey-layers.md), [fishing](odyssey-fishing.md), [animal training](odyssey-animal-training.md) |
+| Environment and UI | [Preferences and key bindings](game-preferences.md), [native UI options](ui-option-repairs.md), [semantic observation](../ui-semantic-bridge.md), [spatial targets](../ui-spatial-targets.md) |
+| Developer actions | [Native action contract](../debug-native-actions.md), [debug protection](../debug-invulnerability.md), [instant work contracts and evidence](../references/reviews/2026-11-21-work-integration.md) |
 
-Welcome to the RIMAPI Reference. Choose a category below to view the available endpoints:
+## Before calling a route
 
-* [**Map & Environment**](map.md) - Weather, zones, terrain, and buildings.
-* [**Pawns & AI**](pawns.md) - Pawn spawning, jobs, medical, editing, and Lord behavior.
-* [**Items & Economy**](things.md) - Physical items, inventories, trading, and player designations.
-* [**Game State & Mechanics**](game.md) - Save/load, random events, factions, and research.
-* [**UI & Camera**](ui.md) - Viewports, windows, images, and visual overlays.
-* [**System & Developer Tools**](system.md) - Cache management, API discovery, and general system diagnostics.
+1. Choose [normal gameplay, environment tooling, or developer manipulation](../product-specs/api-usage-semantics.md) by behavior. These are not authentication roles. See the [Bearer and gateway rules](../SECURITY.md).
+2. Check the exact query keys, body, target ID type and prerequisites. For a developer action, also check `GET /api/v1/debug/native/actions`: the execution route may exist without the requested action.
+3. For writes, use `dry_run` and [idempotency](idempotency.md) only where the contract supports them. Read back the target state, and check it before retrying after a timeout. HTTP success or `queued` does not mean an in-game job finished.
 
----
+## Upstream YAML examples
 
-### 🤖 LLMs & Power Users
-If you are using an AI coding assistant or simply prefer to search through a single, monolithic document, you can view the [**Complete API Reference (All Endpoints)**](all.md) here.
+These pages are rendered from `docs/_api_macroses/controllers/`. They are useful for older examples but do not enumerate the fork or override current contracts:
+
+- [Map and environment](map.md), [pawns and AI](pawns.md), [items and economy](things.md)
+- [Game state and mechanics](game.md), [UI and camera](ui.md), [system and developer tools](system.md)
+- [All YAML examples](all.md), [compact YAML index](llms-compact.md), [legacy API page](../api.md)

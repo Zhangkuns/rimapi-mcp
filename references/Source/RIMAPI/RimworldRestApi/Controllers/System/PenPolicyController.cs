@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
@@ -21,18 +22,58 @@ namespace RIMAPI.Controllers
 
         [Get("/api/v1/pen/policy")]
         [EndpointMetadata("Read a pen marker's name, auto-cut and filters")]
-        public async Task GetPen(HttpListenerContext context) =>
-            await context.SendJsonResponse(_service.GetPen(context.Request.QueryString["thing_id"]));
+        public Task GetPen(HttpListenerContext context) =>
+            Read(context, () => _service.GetPen(context.Request.QueryString["thing_id"]));
 
         [Get("/api/v1/animal/pens")]
         [EndpointMetadata("List built animal pens, enclosed cells, animals and hitching spots on a map")]
-        public async Task GetPens(HttpListenerContext context) =>
-            await context.SendJsonResponse(_service.GetPens(RequestParser.GetMapId(context)));
+        public Task GetPens(HttpListenerContext context) =>
+            Read(context, () => _service.GetPens(RequestParser.GetMapId(context)));
 
         [Get("/api/v1/animal/pen")]
         [EndpointMetadata("Read an animal's native pen, rope, hitching and handler job state")]
-        public async Task GetAnimalPen(HttpListenerContext context) =>
-            await context.SendJsonResponse(_service.GetAnimalPen(context.Request.QueryString["animal_id"]));
+        public Task GetAnimalPen(HttpListenerContext context) =>
+            Read(context, () => _service.GetAnimalPen(context.Request.QueryString["animal_id"]));
+
+        [Get("/api/v1/pen/food")]
+        [EndpointMetadata("Read native pen nutrition growth, consumption, feed stock and example capacities")]
+        public Task GetPenFood(HttpListenerContext context) =>
+            Read(context, () => _service.GetPenFood(context.Request.QueryString["thing_id"]));
+
+        [Post("/api/v1/pen/food/example")]
+        [EndpointMetadata("Add or remove a native pen Food tab example species")]
+        public async Task SetPenFoodExample(HttpListenerContext context)
+        {
+            var body = await context.Request.ReadBodyAsync<PenFoodExampleRequest>();
+            await _mutations.SendAsync(context, body, body != null && body.DryRun,
+                () => _service.SetPenFoodExample(body), WasChanged);
+        }
+
+        [Get("/api/v1/animal/production")]
+        [EndpointMetadata("Read one animal's life stage and native milk, wool and egg production state")]
+        public Task GetAnimalProduction(HttpListenerContext context) =>
+            Read(context, () => _service.GetAnimalProduction(context.Request.QueryString["animal_id"]));
+
+        [Get("/api/v1/animal/designation")]
+        [EndpointMetadata("Read an animal's native tame and manual-slaughter marks and eligibility")]
+        public Task GetAnimalDesignation(HttpListenerContext context) =>
+            Read(context, () => _service.GetAnimalDesignation(context.Request.QueryString["animal_id"]));
+
+        [Post("/api/v1/animal/designation")]
+        [EndpointMetadata("Add or remove an eligible animal's native tame or manual-slaughter mark")]
+        public async Task SetAnimalDesignation(HttpListenerContext context)
+        {
+            var body = await context.Request.ReadBodyAsync<AnimalDesignationRequest>();
+            await _mutations.SendAsync(context, body, body != null && body.DryRun,
+                () => _service.SetAnimalDesignation(body), WasChanged);
+        }
+
+        // These query parameters select the subject, not rows in a dictionary payload.
+        private Task Read(HttpListenerContext context, Func<ApiResult<Dictionary<string, object>>> read) =>
+            _mutations.RunOnMain(() => ResponseBuilder.SendApiResult(context.Response, read()));
+
+        private static bool WasChanged(ApiResult<Dictionary<string, object>> result) =>
+            result.Data != null && result.Data.TryGetValue("changed", out var changed) && changed is true;
 
         [Post("/api/v1/animal/rope")]
         [EndpointMetadata("Submit native rope-to-pen or rope-to-hitch work with an eligible handler")]
@@ -57,10 +98,10 @@ namespace RIMAPI.Controllers
 
         [Get("/api/v1/autoslaughter")]
         [EndpointMetadata("List map auto-slaughter configs and current candidates")]
-        public async Task GetAutoSlaughter(HttpListenerContext context)
+        public Task GetAutoSlaughter(HttpListenerContext context)
         {
             int? mapId = int.TryParse(context.Request.QueryString["map_id"], out var id) ? id : (int?)null;
-            await context.SendJsonResponse(_service.GetAutoSlaughter(mapId));
+            return Read(context, () => _service.GetAutoSlaughter(mapId));
         }
 
         [Post("/api/v1/autoslaughter")]

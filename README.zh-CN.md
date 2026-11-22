@@ -13,12 +13,19 @@ AI 客户端 → 本地 stdio MCP → HTTPS / Tailscale / localhost → RimWorld
 
 ## 安装
 
+使用 RIMAPI 源码树中的 `mcp/`，或克隆独立包：
+
 ```sh
 git clone https://github.com/Zhangkuns/rimapi-mcp.git
 cd rimapi-mcp
+```
+
+在 `rimapi_server.py` 所在目录安装依赖，首次创建配置时保留已有 `.env`：
+
+```sh
 python3 -m venv .venv
 .venv/bin/python -m pip install -r requirements.txt
-cp .env.example .env
+cp -n .env.example .env
 chmod 600 .env
 ```
 
@@ -105,23 +112,35 @@ codex mcp add rimapi -- \
 | 工具 | 用途 |
 | --- | --- |
 | `rimapi_status` | 版本、DLC、鉴权与受保护游戏状态 |
-| `rimapi_search_endpoints` | 搜索所连接游戏的实时路由和合同字段 |
-| `rimapi_search_reference` / `rimapi_read_reference` | 查随包合同、示例、控制器及请求 DTO |
-| `rimapi_read` / `rimapi_write` | GET 与显式写入，分别传递 query、body 和可选幂等键 |
+| `rimapi_search_endpoints` | 按路径、方法或功能搜索所连接游戏的 `/capabilities` |
+| `rimapi_search_reference` / `rimapi_read_reference` | 搜随包合同、静态路由表、控制器及请求 DTO；按文件路径和行号读取 |
+| `rimapi_read` / `rimapi_write` | GET 或显式 POST/PUT/PATCH/DELETE；`query` 与 JSON `body` 分开传 |
 | `rimapi_screenshot` | 地图加载后返回真正的 MCP 图片 |
 | `rimapi_gameplay_guide` | 阅读正常玩法说明 |
 
-请求只连接配置的游戏，不提供 shell 或任意目标 URL 工具。写入不自动重试；超时表示结果未知，重试前先查询真实状态。HTTP 200 或 queued 不代表人物工作已完成。选择参数前先读参考，实时目录中空的 `parameters` 不代表接口没有输入。
+`rimapi_status` 后先查实时目录，再按具体路由查参考，读清合同后调用并读回。
+目录中 `parameters` 为空不代表无参数；开发者动作还要查 `/debug/native/actions`。
+
+`rimapi_read` 发送 GET，但不保证无副作用（`/core/docs/export` 会在游戏主机写文件）。
+SSE（`/api/v1/events`）请用直接 HTTP 流式客户端。写入不自动重试；超时后先查真实状态，
+只在路由支持时使用 `idempotency_key`。HTTP 200 或 `queued` 不代表人物工作已完成。
+畜牧及其他示例见[游玩指南](PLAYING.md)。
 
 ## API 与参考更新
 
-适配器使用通用读写工具，每次搜索接口时从所连接游戏的 `/capabilities` 发现实时路由。新增路由或 body 字段无需单独新增 MCP 工具。原生 UI 控制包括 `/game/preferences`、`/game/key-bindings`、`/game/play-settings`、`/buildings/bill/options`、`/buildings/bill/configure` 和 `/building/books` / `/building/books/eject`。搜索 `game-preferences`、`ui-option-repairs` 参考阅读合同，写入前先读取当前合法选项。
+新增 REST 路由无需逐条加 MCP 工具；通用读写工具可转发，但游戏必须加载实现它的 DLL。
+更新 MCP 或参考不会升级游戏。先核所连接实例的版本和实时目录。
 
-即时编辑实际屋顶可用 `rimapi_write`，搜索 `roof-grid-debug` 读参数。先用 `/debug/native/actions` 确认游戏已支持 `roof.set` 或 `roof.clear`；旧 DLL 可能有同一个路由，但没有新动作。正常施工仍用 `/order/designate/area` 的 `type:"roof"` 划区。
+源码版读取工作区内白名单文档及 C# 文件，独立包读取 `references/` 快照。
+安装 MCP 依赖后，从更新后的 RIMAPI 仓库根目录生成一份新包：
 
-把已有地面物品整堆移到指定格，也可用 `rimapi_write`。先用 `/debug/native/actions` 确认 `item.move` 可用，再搜索 `item-move-debug` 读参数。
+```sh
+python3 tools/generate_api_routes.py --check
+mcp/.venv/bin/python mcp/package.py /absolute/path/to/new-rimapi-mcp
+```
 
-在 RIMAPI 源码树内，参考发现会纳入当前 API 文档及控制器/DTO；独立包读取随包的 `references/` 快照。API 改动后，应从更新后的 RIMAPI checkout 重新打包、同步客户端安装目录，再重连 MCP 载入新增参考路径。游戏也必须加载对应 DLL：更新 MCP 或参考文件不会升级运行中的游戏。实际可用性以实时接口发现为准。
+客户端更新时保留私有 `.env`，重新连接 MCP 后才会索引新增参考路径。
+可用参考工具搜索 `docs/api/index.md` 或 `docs/api/routes.md`。
 
 ## 排障
 

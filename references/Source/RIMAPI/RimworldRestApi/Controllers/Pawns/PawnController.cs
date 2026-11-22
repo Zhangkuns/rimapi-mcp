@@ -12,12 +12,15 @@ namespace RIMAPI.Controllers
         private readonly IColonistService _colonistService;
         private readonly ICachingService _cachingService;
         private readonly AiMutationCoordinator _mutations;
+        private readonly IPawnControlService _pawnControl;
 
-        public PawnController(IColonistService colonistService, ICachingService cachingService, AiMutationCoordinator mutations)
+        public PawnController(IColonistService colonistService, ICachingService cachingService,
+            AiMutationCoordinator mutations, IPawnControlService pawnControl)
         {
             _colonistService = colonistService;
             _cachingService = cachingService;
             _mutations = mutations;
+            _pawnControl = pawnControl;
         }
 
         [Get("/api/v1/colonists")]
@@ -216,6 +219,33 @@ namespace RIMAPI.Controllers
             var itemId = RequestParser.GetIntParameter(context, "item_id");
             var result = _colonistService.MakeJobEquip(mapId, pawnId, itemId);
             await context.SendJsonResponse(result);
+        }
+
+        [Post("/api/v1/pawn/inventory/ingest")]
+        [EndpointMetadata("Normal gear-tab consume: start native Ingest for an existing inventory food/drug")]
+        public async Task IngestFromInventory(HttpListenerContext context)
+        {
+            var body = await context.Request.ReadBodyAsync<PawnInventoryIngestRequest>();
+            await _mutations.SendAsync(context, body, body != null && body.DryRun,
+                () => _pawnControl.IngestFromInventory(body));
+        }
+
+        [Post("/api/v1/pawn/banish")]
+        [EndpointMetadata("Normal character-card banish after native confirmation")]
+        public async Task BanishPawn(HttpListenerContext context)
+        {
+            var body = await context.Request.ReadBodyAsync<PawnBanishRequest>();
+            await _mutations.SendAsync(context, body, body != null && body.DryRun,
+                () => _pawnControl.Banish(body));
+        }
+
+        [Post("/api/v1/pawn/execution-mark")]
+        [EndpointMetadata("Set or clear the native guilty-colonist awaitingExecution flag; never kills")]
+        public async Task SetExecutionMark(HttpListenerContext context)
+        {
+            var body = await context.Request.ReadBodyAsync<PawnExecutionMarkRequest>();
+            await _mutations.SendAsync(context, body, body != null && body.DryRun,
+                () => _pawnControl.SetExecutionMark(body));
         }
     }
 }
